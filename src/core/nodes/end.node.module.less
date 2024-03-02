@@ -1,0 +1,42 @@
+:global {
+  :local(.end-node-wrapper) {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 160px;
+    height: 54px;
+    border-radius: 100px;
+    color: #fff;
+    text-align: center;
+    font-size: 14px;
+    transition: .25s;
+    font-weight: 600;
+    background-color: #484848;
+    border: 2px solid transparent;
+
+    .node-selected-halo {
+      position: absolute;
+      width: calc(100% + 8px);
+      height: calc(100% + 8px);
+      left: -4px;
+      top: -4px;
+      border-radius: 100px;
+      z-index: -1;
+      transition: background-color .25s;
+    }
+
+    svg.end-node-label-icon {
+      font-size: 18px;
+      margin-right: 4px;
+      vertical-align: -4px;
+    }
+
+    &.selected {
+      border-color: #4081ff;
+
+      .node-selected-halo {
+        background-color: rgba(64, 129, 255, .3);
+      }
+    }
+  }
+}

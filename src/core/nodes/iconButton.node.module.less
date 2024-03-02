@@ -1,0 +1,32 @@
+:global {
+  :local(.icon-button-node-wrapper) {
+    .icon-button-node-content {
+      width: 22px;
+      height: 22px;
+      font-size: 14px;
+      line-height: 22px;
+      text-align: center;
+      border-radius: 8px;
+      transition: .25s;
+      background-color: #484848;
+      color: #fff;
+      cursor: pointer;
+
+      svg {
+        vertical-align: -2px;
+      }
+    }
+
+    .react-flow__handle {
+      visibility: hidden;
+
+      &.target {
+        top: 0;
+      }
+
+      &.source {
+        bottom: 0;
+      }
+    }
+  }
+}

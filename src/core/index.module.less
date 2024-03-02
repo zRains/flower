@@ -1,0 +1,118 @@
+:global {
+  :local(.flower-container) {
+    display: flex;
+    width: 100%;
+
+    .flower-render-container {
+      flex-grow: 1;
+      height: 100lvh;
+      background-color: #242424;
+
+
+      .react-flow__edge {
+        /* 禁用边框的点击事件（edgesFocusable = false 似乎无效） */
+        pointer-events: none;
+
+        path.react-flow__edge-path {
+          stroke-width: 2;
+          background: #484848;
+          stroke: #484848;
+        }
+      }
+    }
+  }
+
+  :local(.flower-right-sidebar-container) {
+    width: fit-content;
+    height: 100%;
+    border-left: 1px solid #343434;
+
+    .flower-right-sidebar {
+      width: 320px;
+      height: 100%;
+      background-color: #111;
+      color: #fff;
+
+      header {
+        display: flex;
+        align-items: center;
+        height: 50px;
+        width: 100%;
+        border-bottom: 1px solid #343434;
+        padding: 0 16px;
+      }
+    }
+  }
+
+  :local(.node-dropdown-menu-wrapper) {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    z-index: 2;
+
+    &.float {
+      position: absolute;
+      bottom: -32px;
+      left: 0;
+      right: 0;
+    }
+
+    .node-dropdown-menu-trigger {
+      border-radius: 8px;
+      width: 22px;
+      height: 22px;
+      text-align: center;
+      font-size: 14px;
+      line-height: 22px;
+      cursor: pointer;
+      opacity: 1;
+      transition: .25s;
+      background-color: #484848;
+      color: #fff;
+
+      .anticon {
+        display: inline-flex;
+        align-items: center;
+        color: inherit;
+        font-style: normal;
+        line-height: 0;
+        text-align: center;
+        text-transform: none;
+        vertical-align: -0.125em;
+        text-rendering: optimizelegibility;
+        -webkit-font-smoothing: antialiased;
+      }
+
+      &:hover {
+        background-color: #4081ff;
+      }
+    }
+  }
+
+  ul.ant-dropdown-menu {
+    padding: 5px 8px;
+    border-radius: 12px;
+    background-color: #343434;
+    box-shadow: none;
+
+    li {
+      color: #fff;
+
+      //TODO: disabled样式未处理
+      &.ant-dropdown-menu-item,
+      .ant-dropdown-menu-submenu-title {
+        color: #fff;
+
+        .ant-dropdown-menu-submenu-arrow-icon {
+          color: #fff;
+        }
+
+        &:hover {
+          border-radius: 8px;
+          background: rgba(255, 255, 255, .1);
+        }
+      }
+    }
+  }
+}

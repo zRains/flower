@@ -1,0 +1,64 @@
+:global {
+  :local(.child-node-wrapper) {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 4px 30px;
+    width: 140px;
+    height: 40px;
+    border-radius: 100px;
+    color: #fff;
+    transition: .25s ease-in;
+    background-color: transparent;
+    border: 2px solid #4f69df;
+
+    .child-node-content {
+      font-size: 12px;
+      overflow: hidden;
+      white-space: nowrap;
+      color: #4f69df;
+      text-align: center;
+      text-overflow: ellipsis;
+      font-weight: 600;
+    }
+
+    .child-node-operations {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      right: 10px;
+      margin: auto;
+      height: fit-content;
+      z-index: 2;
+
+      .operation-trigger {
+        display: block;
+        padding: 0 4px;
+        width: 24px;
+        height: 24px;
+        font-size: 16px;
+        border-radius: 6px;
+        cursor: pointer;
+        color: #4f69df;
+        background-color: #4f69df1a;
+
+        svg {
+          vertical-align: -2px;
+        }
+
+        &:hover {
+          background: rgba(255, 255, 255, .1);
+        }
+      }
+    }
+
+    .react-flow__handle {
+      border-color: #4f69df;
+      background-color: #fff;
+    }
+
+    &.selected {
+      background-color: #6178e24d;
+    }
+  }
+}
