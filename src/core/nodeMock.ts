@@ -41,7 +41,7 @@ export const initialNodes: Array<Node> = [
     type: 'conditionChildNode',
     data: {},
     position,
-    draggable,
+    draggable: true,
     connectable,
   },
   {

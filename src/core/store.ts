@@ -5,7 +5,6 @@ import {
   Position,
   applyEdgeChanges,
   applyNodeChanges,
-  type NodeProps,
   type EdgeProps,
   type Edge,
   type Node,
@@ -66,40 +65,10 @@ const useFStore = create<FState & FAction>((set, get) => ({
     set({ edges })
   },
   dagreLayout: (direction: 'TB' | 'LR' = 'TB') => {
-    const isHorizontal = direction === 'LR'
-    const dagreGraph = new dagre.graphlib.Graph()
     const { nodes, edges } = get()
+    const { nodes: layoutedNodes, edges: layoutedEdges } = getLayoutedRes([...nodes], [...edges], direction)
 
-    dagreGraph.setDefaultEdgeLabel(() => ({}))
-    dagreGraph.setGraph({ rankdir: direction, ranksep: 85 })
-
-    nodes.forEach((node) => {
-      /** 需要深克隆 */
-      dagreGraph.setNode(node.id, { ...getNodeSize(node.type) })
-    })
-
-    edges.forEach((edge) => {
-      dagreGraph.setEdge(edge.source, edge.target)
-    })
-
-    dagre.layout(dagreGraph)
-
-    nodes.forEach((node) => {
-      const nodeWithPosition = dagreGraph.node(node.id)
-      const { width: nodeWidth, height: nodeHeight } = getNodeSize(node.type)
-
-      node.targetPosition = isHorizontal ? Position.Left : Position.Top
-      node.sourcePosition = isHorizontal ? Position.Right : Position.Bottom
-
-      node.position = {
-        x: nodeWithPosition.x - nodeWidth / 2,
-        y: nodeWithPosition.y - nodeHeight / 2,
-      }
-
-      return node
-    })
-
-    set({ nodes: [...nodes], edges: [...edges] })
+    set({ nodes: layoutedNodes, edges: layoutedEdges })
   },
   closeNodeMenu: (excludeNode?: string) => {
     set({
@@ -116,7 +85,7 @@ const useFStore = create<FState & FAction>((set, get) => ({
     })
   },
   addNode: (sourceNodeId: string, type: string) => {
-    const { nodes, edges, closeNodeMenu, dagreLayout } = get()
+    const { nodes, edges, closeNodeMenu } = get()
     switch (type) {
       case 'apiServiceNode':
         {
@@ -126,17 +95,17 @@ const useFStore = create<FState & FAction>((set, get) => ({
           const newEdge = createEdge(sourceNodeId, newNode.id)
 
           sourceRelatedEdge.source = newNode.id
-          set({ nodes: [...nodes, newNode], edges: [newEdge, ...edges] })
+          set(getLayoutedRes([...nodes, newNode], [newEdge, ...edges]))
         }
         break
       case 'conditionHeaderNode': {
         const { nodes: conditionNodes, edges: conditionEdges } = createConditionRes()
         // 正常情况下关联Edge是存在的
         const sourceRelatedEdge = edges.find((edge) => edge.source === sourceNodeId)!
-        const newEdge = createEdge(conditionNodes[3].id, sourceRelatedEdge.target)
+        const newEdge = createEdge(sourceNodeId, conditionNodes[0].id)
 
-        sourceRelatedEdge.target = conditionNodes[0].id
-        set({ nodes: [...nodes, ...conditionNodes], edges: [...edges, ...conditionEdges, newEdge] })
+        sourceRelatedEdge.source = conditionNodes[3].id
+        set(getLayoutedRes([...nodes, ...conditionNodes], [...edges, ...conditionEdges, newEdge]))
         break
       }
       case 'conditionChildNode': {
@@ -156,7 +125,7 @@ const useFStore = create<FState & FAction>((set, get) => ({
           __targetNodes: [...targetNode.data.__targetNodes, newChildNode.id],
         }
 
-        set({ nodes: [...nodes, newChildNode], edges: [...edges, newHeaderToChildEdge, newChildToButtonEdge] })
+        set(getLayoutedRes([...nodes, newChildNode], [...edges, newHeaderToChildEdge, newChildToButtonEdge]))
         break
       }
 
@@ -164,10 +133,7 @@ const useFStore = create<FState & FAction>((set, get) => ({
         break
     }
 
-    requestAnimationFrame(() => {
-      closeNodeMenu()
-      dagreLayout()
-    })
+    requestAnimationFrame(() => closeNodeMenu())
   },
   delNode: (nodeId: string, type: string) => {
     const { nodes, edges, dagreLayout } = get()
@@ -177,26 +143,49 @@ const useFStore = create<FState & FAction>((set, get) => ({
         const targetRelatedEdge = edges.find((edge) => edge.target === nodeId)!
         const sourceRelatedEdge = edges.find((edge) => edge.source === nodeId)!
 
-        targetRelatedEdge.target = sourceRelatedEdge.target
-
-        set({
-          nodes: nodes.filter((node) => node.id !== nodeId),
-          edges: edges.filter((edge) => edge.id !== sourceRelatedEdge.id),
-        })
-        requestAnimationFrame(() => dagreLayout())
+        sourceRelatedEdge.source = targetRelatedEdge.source
+        set(
+          getLayoutedRes(
+            nodes.filter((node) => node.id !== nodeId),
+            edges.filter((edge) => edge.id !== targetRelatedEdge.id),
+          ),
+        )
         break
       }
 
       case 'conditionChildNode': {
-        const targetRelatedEdge = edges.find((edge) => edge.target === nodeId)!
-        const sourceRelatedEdge = edges.find((edge) => edge.source === nodeId)!
-        const relatedConditionHeaderNode = nodes.find((node) => node.id === targetRelatedEdge.source)!
+        const nodeMap = new Map(nodes.map((node) => [node.id, node]))
+        let targetRelatedEdge = edges.find((edge) => edge.target === nodeId)!
+        let sourceRelatedEdge = edges.find((edge) => edge.source === nodeId)!
+        const relatedConditionHeaderNode = nodeMap.get(targetRelatedEdge.source)!
 
-        if (relatedConditionHeaderNode.data.targetNodes.length > 2) {
-          set({
-            nodes: nodes.filter((node) => node.id !== nodeId),
-            edges: edges.filter((edge) => edge.id !== targetRelatedEdge.id || edge.id !== sourceRelatedEdge.id),
-          })
+        if (relatedConditionHeaderNode.data.__targetNodes.length > 2) {
+          relatedConditionHeaderNode.data.__targetNodes = relatedConditionHeaderNode.data.__targetNodes.filter(
+            (id: string) => nodeId !== id,
+          )
+          set(
+            getLayoutedRes(
+              nodes.filter((node) => node.id !== nodeId),
+              edges.filter((edge) => ![targetRelatedEdge.id, sourceRelatedEdge.id].includes(edge.id)),
+            ),
+          )
+        } /** 删除整个条件节点组 */ else {
+          const iconButtonNode = nodeMap.get(relatedConditionHeaderNode.data.__iconButtonNodes[0])!
+          const { nodeIds, edgeIds } = patchGraphRes(
+            edges,
+            relatedConditionHeaderNode.id,
+            relatedConditionHeaderNode.data.__iconButtonNodes[0],
+          )
+
+          targetRelatedEdge = edges.find((edge) => edge.target === relatedConditionHeaderNode.id)!
+          sourceRelatedEdge = edges.find((edge) => edge.source === iconButtonNode.id)!
+          sourceRelatedEdge.source = targetRelatedEdge.source
+          set(
+            getLayoutedRes(
+              nodes.filter((node) => !nodeIds.has(node.id)),
+              edges.filter((edge) => !(edgeIds.has(edge.id) || targetRelatedEdge.id === edge.id)),
+            ),
+          )
         }
 
         break
@@ -240,7 +229,7 @@ function createConditionRes() {
   }
 }
 
-function createNode(nodeProps?: Partial<NodeProps>): Node {
+function createNode(nodeProps?: Partial<Node>): Node {
   return {
     data: {},
     id: uuidv4(),
@@ -259,4 +248,68 @@ function createEdge(sourceNodeId: string, targetNodeId: string, edgeProps?: Part
     animated: false,
     ...edgeProps,
   }
+}
+
+/**
+ * 给出开始节点和结束节点，返回两点及其之间的所有节点和边的id
+ * @param nodes 全部节点
+ * @param edges 全部边
+ * @param startNodeId 开始节点
+ * @param endNodeId 结束节点
+ * @returns
+ */
+function patchGraphRes(edges: Array<Edge>, startNodeId: string, endNodeId: string) {
+  const relatedNodeIds: string[] = [startNodeId, endNodeId]
+  const relatedEdgeIds: string[] = []
+  const recur = (targetNodeId: string) => {
+    edges
+      .filter((edge) => edge.source === targetNodeId)
+      .forEach((edge) => {
+        relatedEdgeIds.push(edge.id)
+        if (edge.target !== endNodeId) {
+          relatedNodeIds.push(edge.target)
+          recur(edge.target)
+        }
+      })
+  }
+
+  recur(startNodeId)
+
+  return { nodeIds: new Set(relatedNodeIds), edgeIds: new Set(relatedEdgeIds) }
+}
+
+function getLayoutedRes(nodes: Array<Node>, edges: Array<Edge>, direction: 'TB' | 'LR' = 'TB') {
+  const isHorizontal = direction === 'LR'
+  const dagreGraph = new dagre.graphlib.Graph()
+
+  dagreGraph.setDefaultEdgeLabel(() => ({}))
+  dagreGraph.setGraph({ rankdir: direction, ranksep: 85 })
+
+  nodes.forEach((node) => {
+    /** 需要深克隆 */
+    dagreGraph.setNode(node.id, { ...getNodeSize(node.type) })
+  })
+
+  edges.forEach((edge) => {
+    dagreGraph.setEdge(edge.source, edge.target)
+  })
+
+  dagre.layout(dagreGraph)
+
+  nodes.forEach((node) => {
+    const nodeWithPosition = dagreGraph.node(node.id)
+    const { width: nodeWidth, height: nodeHeight } = getNodeSize(node.type)
+
+    node.targetPosition = isHorizontal ? Position.Left : Position.Top
+    node.sourcePosition = isHorizontal ? Position.Right : Position.Bottom
+
+    node.position = {
+      x: nodeWithPosition.x - nodeWidth / 2,
+      y: nodeWithPosition.y - nodeHeight / 2,
+    }
+
+    return node
+  })
+
+  return { nodes, edges }
 }
