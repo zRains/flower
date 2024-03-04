@@ -7,7 +7,7 @@ export const initialNodes: Array<Node> = [
   {
     id: '1',
     type: 'startNode',
-    data: { label: 'input', menuOpen: false },
+    data: { label: 'input' },
     position,
     draggable,
     connectable,
@@ -15,7 +15,7 @@ export const initialNodes: Array<Node> = [
   {
     id: '2',
     type: 'apiServiceNode',
-    data: { label: 'node 2', menuOpen: false },
+    data: { label: 'node 2' },
     position,
     draggable,
     connectable,
@@ -41,7 +41,7 @@ export const initialNodes: Array<Node> = [
     type: 'conditionChildNode',
     data: {},
     position,
-    draggable: true,
+    draggable,
     connectable,
   },
   {

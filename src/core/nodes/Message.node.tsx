@@ -1,7 +1,8 @@
 import cn from 'classnames'
 import { memo } from 'react'
 import { Handle, Position, type NodeProps } from 'reactflow'
-import NodeDropdownMenu from '../NodeDropdownMenu'
+import NodeAttachMenu from '../NodeAttachMenu'
+import NodeMenu from '../NodeMenu'
 import style from './message.node.module.less'
 
 interface MessageNodeProps extends NodeProps {}
@@ -32,8 +33,8 @@ export default memo(function MessageNode(props: MessageNodeProps) {
         <section className="message-node-type-desc">类型：消息提示 - 全局消息</section>
       </div>
       <Handle type="source" position={Position.Bottom} isConnectable={props.isConnectable} />
-      <div className="message-node-operations">
-        <span className="operation-trigger">
+      {/* <div className="message-node-operations">
+        <span className="operation-trigger" onClick={() => delNode(props.id, props.type)}>
           <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24">
             <path
               fill="currentColor"
@@ -41,8 +42,9 @@ export default memo(function MessageNode(props: MessageNodeProps) {
             />
           </svg>
         </span>
-      </div>
-      <NodeDropdownMenu float open={props.data.menuOpen} />
+      </div> */}
+      <NodeMenu className="message-node-menu-wrapper" />
+      <NodeAttachMenu className="attach-menu" open={props.data.menuOpen} />
     </div>
   )
 })

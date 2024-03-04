@@ -47,9 +47,5 @@ export default function BasicStepEdge(props: BasicStepEdgeProps) {
     return path
   }, [edges, sourceX, sourceY, target, targetX, targetY])
 
-  return (
-    <>
-      <BaseEdge {...props} path={edgePath} />
-    </>
-  )
+  return <BaseEdge {...props} path={edgePath} />
 }

@@ -7,7 +7,7 @@ import { memo } from 'react'
 import { Handle, Position, type NodeProps } from 'reactflow'
 // import { BasicMenu } from '../menu'
 import cn from 'classnames'
-import NodeDropdownMenu from '../NodeDropdownMenu'
+import NodeAttachMenu from '../NodeAttachMenu'
 import style from './start.node.module.less'
 
 interface StartNodeProps extends NodeProps {}
@@ -39,7 +39,7 @@ export default memo(function StartNode(props: StartNodeProps) {
         入参
       </div>
       <Handle type="source" position={Position.Bottom} isConnectable={props.isConnectable} />
-      <NodeDropdownMenu float open={props.data.menuOpen} />
+      <NodeAttachMenu className="attach-menu" open={props.data.menuOpen} />
     </div>
   )
 })

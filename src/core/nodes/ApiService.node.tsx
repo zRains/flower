@@ -1,7 +1,7 @@
 import cn from 'classnames'
 import { memo } from 'react'
 import { Handle, Position, type NodeProps } from 'reactflow'
-import NodeDropdownMenu from '../NodeDropdownMenu'
+import NodeAttachMenu from '../NodeAttachMenu'
 import style from './apiService.node.module.less'
 import useFStore from '../store'
 
@@ -35,8 +35,8 @@ export default memo(function ApiServiceNode(props: ApiServiceNodeProps) {
         <section className="api-service-node-type-desc">类型：接口调用</section>
       </div>
       <Handle type="source" position={Position.Bottom} isConnectable={props.isConnectable} />
-      <div className="api-service-node-operations" onClick={() => delNode(props.id, 'apiServiceNode')}>
-        <span className="operation-trigger">
+      <div className="api-service-node-operations">
+        <span className="operation-trigger" onClick={() => delNode(props.id, props.type)}>
           <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24">
             <path
               fill="currentColor"
@@ -45,7 +45,7 @@ export default memo(function ApiServiceNode(props: ApiServiceNodeProps) {
           </svg>
         </span>
       </div>
-      <NodeDropdownMenu float open={props.data.menuOpen} />
+      <NodeAttachMenu className="attach-menu" open={props.data.menuOpen} />
     </div>
   )
 })

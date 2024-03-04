@@ -8,9 +8,9 @@ export default function AddChildBtn() {
   const addNode = useFStore((state) => state.addNode)
 
   return (
-    <div className={cn(style['node-dropdown-menu-wrapper'], 'float')}>
-      <div className="node-dropdown-menu-trigger" onClick={() => addNode(currentNodeId!, 'conditionChildNode')}>
-        <span role="img" aria-label="plus" className="anticon anticon-plus">
+    <div className={cn(style['menu-wrapper'], 'attach-menu')}>
+      <div className="menu-trigger" onClick={() => addNode(currentNodeId!, 'conditionChildNode')}>
+        <span className="menu-trigger-icon">
           <svg
             viewBox="64 64 896 896"
             focusable="false"

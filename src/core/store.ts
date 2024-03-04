@@ -17,9 +17,12 @@ import { v4 as uuidv4 } from 'uuid'
 import { initialEdges, initialNodes } from './nodeMock'
 import { getNodeSize } from './utils'
 
+type MenuHandler = (open?: boolean) => void
+
 type FState = {
   nodes: Array<Node>
   edges: Array<Edge>
+  menuHandlers: Array<{ id: string; handler: MenuHandler }>
 }
 
 type FAction = {
@@ -27,6 +30,8 @@ type FAction = {
   onEdgesChange: OnEdgesChange
   setNodes: (nodes: Node[]) => void
   setEdges: (edges: Edge[]) => void
+  addMenuHandler: (id: string, handler: MenuHandler) => void
+  removeMenuHandler: (id: string) => void
   dagreLayout: (direction?: 'TB' | 'LR') => void
   closeNodeMenu: (excludeNode?: string) => void
 
@@ -46,6 +51,7 @@ type FAction = {
 }
 
 const useFStore = create<FState & FAction>((set, get) => ({
+  menuHandlers: [],
   nodes: initialNodes,
   edges: initialEdges,
   onNodesChange: (changes: NodeChange[]) => {
@@ -64,25 +70,20 @@ const useFStore = create<FState & FAction>((set, get) => ({
   setEdges: (edges: Edge[]) => {
     set({ edges })
   },
+  addMenuHandler: (id: string, handler: MenuHandler) => {
+    set({ menuHandlers: [...get().menuHandlers, { id, handler }] })
+  },
+  removeMenuHandler: (id: string) => {
+    set({ menuHandlers: get().menuHandlers.filter((menuHandle) => menuHandle.id !== id) })
+  },
   dagreLayout: (direction: 'TB' | 'LR' = 'TB') => {
     const { nodes, edges } = get()
     const { nodes: layoutedNodes, edges: layoutedEdges } = getLayoutedRes([...nodes], [...edges], direction)
 
     set({ nodes: layoutedNodes, edges: layoutedEdges })
   },
-  closeNodeMenu: (excludeNode?: string) => {
-    set({
-      nodes: get().nodes.map((node) => {
-        if (node.id !== excludeNode && Reflect.has(node.data, 'menuOpen')) {
-          node.data = {
-            ...node.data,
-            menuOpen: false,
-          }
-        }
-
-        return node
-      }),
-    })
+  closeNodeMenu: (excludeId?: string) => {
+    get().menuHandlers.forEach((menuHandler) => excludeId !== menuHandler.id && menuHandler.handler(false))
   },
   addNode: (sourceNodeId: string, type: string) => {
     const { nodes, edges, closeNodeMenu } = get()
@@ -136,10 +137,11 @@ const useFStore = create<FState & FAction>((set, get) => ({
     requestAnimationFrame(() => closeNodeMenu())
   },
   delNode: (nodeId: string, type: string) => {
-    const { nodes, edges, dagreLayout } = get()
+    const { nodes, edges } = get()
 
     switch (type) {
-      case 'apiServiceNode': {
+      case 'apiServiceNode':
+      case 'messageNode': {
         const targetRelatedEdge = edges.find((edge) => edge.target === nodeId)!
         const sourceRelatedEdge = edges.find((edge) => edge.source === nodeId)!
 
