@@ -1,0 +1,95 @@
+:global {
+  :local(.params-widget-wrapper) {
+    .params-config-wrapper {
+      display: flex;
+      flex-direction: column;
+      background-color: #252525;
+      width: 100%;
+      padding: 12px;
+      margin-bottom: 16px;
+      border-radius: 6px;
+
+      .params-widget-header {
+        display: flex;
+        margin-bottom: 16px;
+        height: 24px;
+
+        .collapsed-btn,
+        .delete-btn {
+          height: 24px;
+          width: 24px;
+          color: #fff;
+          flex-shrink: 0;
+          border-radius: 6px;
+          text-align: center;
+          cursor: pointer;
+          transition: transform .25s;
+
+          &.collapsed-btn {
+            transform: rotate(180deg);
+          }
+
+          svg {
+            vertical-align: -2px;
+          }
+        }
+
+        .params-widget-name {
+          display: flex;
+          flex-grow: 1;
+          overflow: hidden;
+
+          .params-widget-name-box {
+            overflow: hidden;
+            width: 90%;
+
+            .ant-form-item-control-input {
+              min-height: 24px;
+            }
+          }
+        }
+
+        &.isCollapsed {
+          margin-bottom: 0;
+
+          .collapsed-btn {
+            transform: rotate(90deg);
+          }
+        }
+      }
+    }
+
+    .params-add-btn {
+      background-color: #252525 !important;
+      border-radius: 6px;
+      border: none;
+      color: #fff !important;
+      font-size: 12px;
+    }
+
+
+    // .ant-select.ant-select-in-form-item {
+    //   .ant-select-selector {
+    //     line-height: 20px;
+    //     border-radius: 6px;
+    //     font-size: 13px;
+    //     border: 1px solid transparent;
+    //     background-color: #111;
+
+    //     .ant-select-selection-item {
+    //       color: #fff;
+    //     }
+
+    //     &:hover {
+    //       border-color: #4081ff4d;
+    //     }
+    //   }
+
+    //   &.ant-select-focused.ant-select-focused {
+    //     .ant-select-selector {
+    //       border-color: #4081ff;
+    //     }
+    //   }
+    // }
+  }
+}

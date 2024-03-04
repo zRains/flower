@@ -1,0 +1,29 @@
+:global {
+  :local(.click-input-editor-widget-wrapper) {
+    display: flex;
+    flex-wrap: nowrap;
+
+    .ant-typography {
+      user-select: none;
+      color: #fff;
+    }
+
+    .params-widget-name-edit-btn {
+      height: 24px;
+      width: 24px;
+      color: #fff;
+      flex-shrink: 0;
+      border-radius: 6px;
+      text-align: center;
+      cursor: pointer;
+
+      svg {
+        vertical-align: -2px;
+      }
+
+      &:hover {
+        background: rgba(255, 255, 255, .1);
+      }
+    }
+  }
+}
