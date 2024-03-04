@@ -16,7 +16,7 @@ export default memo(function ChildNode(props: ChildNodeProps) {
       <div className="child-node-content">分支{props.id}</div>
       <Handle type="source" position={Position.Bottom} isConnectable={props.isConnectable} />
       <div className="child-node-operations">
-        <span className="operation-trigger" onClick={() => delNode(props.id, props.type)}>
+        <span className="operation-trigger" onClick={() => delNode(props.id)}>
           <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24">
             <path
               fill="currentColor"

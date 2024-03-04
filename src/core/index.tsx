@@ -72,7 +72,7 @@ function LayoutFlow() {
         >
           <Background />
           <Panel position="top-right">
-            <button onClick={() => dagreLayout('TB')}>TB layout</button>
+            <button onClick={() => dagreLayout('TB')}>Save</button>
             {/* <button onClick={() => addNode()}>Add Node</button> */}
             {/* <button onClick={() => onLayout('LR')}>LR layout</button> */}
           </Panel>

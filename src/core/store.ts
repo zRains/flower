@@ -45,9 +45,8 @@ type FAction = {
   /**
    * 删除目标节点
    * @param sourceNodeId 目标节点id
-   * @param sourceNodeId 目标节点类型
    */
-  delNode: (nodeId: string, type: string) => void
+  delNode: (nodeId: string) => void
 }
 
 const useFStore = create<FState & FAction>((set, get) => ({
@@ -74,6 +73,8 @@ const useFStore = create<FState & FAction>((set, get) => ({
     set({ menuHandlers: [...get().menuHandlers, { id, handler }] })
   },
   removeMenuHandler: (id: string) => {
+    console.log('remove menu handler: ', id)
+
     set({ menuHandlers: get().menuHandlers.filter((menuHandle) => menuHandle.id !== id) })
   },
   dagreLayout: (direction: 'TB' | 'LR' = 'TB') => {
@@ -89,6 +90,7 @@ const useFStore = create<FState & FAction>((set, get) => ({
     const { nodes, edges, closeNodeMenu } = get()
     switch (type) {
       case 'apiServiceNode':
+      case 'messageNode':
         {
           const newNode = createNode({ type })
           // 正常情况下关联Edge是存在的
@@ -136,10 +138,11 @@ const useFStore = create<FState & FAction>((set, get) => ({
 
     requestAnimationFrame(() => closeNodeMenu())
   },
-  delNode: (nodeId: string, type: string) => {
+  delNode: (nodeId: string) => {
     const { nodes, edges } = get()
+    const nodeType = nodes.find((node) => node.id === nodeId)!.type
 
-    switch (type) {
+    switch (nodeType) {
       case 'apiServiceNode':
       case 'messageNode': {
         const targetRelatedEdge = edges.find((edge) => edge.target === nodeId)!

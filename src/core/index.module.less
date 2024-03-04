@@ -28,18 +28,50 @@
     border-left: 1px solid #343434;
 
     .flower-right-sidebar {
+      display: flex;
+      flex-direction: column;
       width: 320px;
       height: 100%;
       background-color: #111;
       color: #fff;
 
-      header {
+      &>header {
         display: flex;
         align-items: center;
         height: 50px;
         width: 100%;
         border-bottom: 1px solid #343434;
         padding: 0 16px;
+      }
+
+      .sidebar-form-container {
+        padding: 16px;
+        flex: 1;
+        overflow: auto;
+
+        .sidebar-form {
+          .ant-form-item {
+            margin-bottom: 0;
+
+            .ant-form-item-label label {
+              font-size: 13px;
+              color: #f8f8f8;
+            }
+
+            // input {
+            //   height: 32px;
+            //   border-radius: 6px;
+            //   border: 1px solid #343434;
+            //   font-size: 13px;
+            //   color: #fff;
+            //   background-color: #252525;
+            // }
+
+            &:not(:first-child) {
+              margin-top: 12px;
+            }
+          }
+        }
       }
     }
   }
