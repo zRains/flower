@@ -34,7 +34,7 @@ export default memo(function ApiServiceNode(props: ApiServiceNodeProps) {
       </div>
       <Handle type="source" position={Position.Bottom} isConnectable={props.isConnectable} />
       <NodeMenu className="api-service-node-menu-wrapper" />
-      <NodeAttachMenu className="attach-menu" open={props.data.menuOpen} />
+      <NodeAttachMenu className="attach-menu" />
     </div>
   )
 })

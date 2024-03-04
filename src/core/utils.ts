@@ -9,6 +9,7 @@ export const NodeSizeMap = new Map<string, NodeSize>([
   ['conditionHeaderNode', { width: 140, height: 40 }],
   ['conditionChildNode', { width: 140, height: 40 }],
   ['iconButtonNode', { width: 22, height: 22 }],
+  ['callStatusNode', { width: 140, height: 40 }],
 ])
 
 export function getNodeSize(nodeType?: string): NodeSize {

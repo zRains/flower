@@ -13,6 +13,7 @@ import MessageNode from './nodes/Message.node'
 import StartNode from './nodes/Start.node'
 import ConditionChildNode from './nodes/condition/Child.node'
 import ConditionHeaderNode from './nodes/condition/Header.node'
+import CallStatusNode from './nodes/status/CallStatus.node'
 
 /** Custom edges */
 import BasicStepEdge from './edges/BasicStep.edge'
@@ -25,6 +26,7 @@ const nodeTypes = {
   conditionChildNode: ConditionChildNode,
   iconButtonNode: IconButtonNode,
   messageNode: MessageNode,
+  callStatusNode: CallStatusNode,
 }
 
 const edgeTypes = {

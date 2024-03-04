@@ -39,7 +39,7 @@ export default memo(function StartNode(props: StartNodeProps) {
         入参
       </div>
       <Handle type="source" position={Position.Bottom} isConnectable={props.isConnectable} />
-      <NodeAttachMenu className="attach-menu" open={props.data.menuOpen} />
+      <NodeAttachMenu className="attach-menu" />
     </div>
   )
 })

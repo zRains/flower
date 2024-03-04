@@ -22,6 +22,8 @@ type MenuHandler = (open?: boolean) => void
 type FState = {
   nodes: Array<Node>
   edges: Array<Edge>
+  startNode: Node
+  endNode: Node
   menuHandlers: Array<{ id: string; handler: MenuHandler }>
 }
 
@@ -50,9 +52,11 @@ type FAction = {
 }
 
 const useFStore = create<FState & FAction>((set, get) => ({
-  menuHandlers: [],
   nodes: initialNodes,
   edges: initialEdges,
+  startNode: initialNodes.find((node) => node.type === 'startNode')!,
+  endNode: initialNodes.find((node) => node.type === 'endNode')!,
+  menuHandlers: [],
   onNodesChange: (changes: NodeChange[]) => {
     set({
       nodes: applyNodeChanges(changes, get().nodes),
@@ -129,6 +133,36 @@ const useFStore = create<FState & FAction>((set, get) => ({
         }
 
         set(getLayoutedRes([...nodes, newChildNode], [...edges, newHeaderToChildEdge, newChildToButtonEdge]))
+        break
+      }
+
+      case 'callStatusNode': {
+        const { endNode } = get()
+        const successNode = createNode({ type, data: { succeed: true } })
+        const failedNode = createNode({ type })
+        const sourceRelatedEdge = edges.find((edge) => edge.source === sourceNodeId)!
+        const newIconButtonNode = createNode({ type: 'iconButtonNode' })
+
+        sourceRelatedEdge.source = successNode.id
+        edges.forEach((edge) => {
+          if (edge.target === endNode.id) {
+            edge.target = newIconButtonNode.id
+          }
+        })
+        set(
+          getLayoutedRes(
+            [...nodes, successNode, failedNode, newIconButtonNode],
+            [
+              ...edges,
+              // 将失败节点连接到末尾的节点
+              createEdge(newIconButtonNode.id, endNode.id),
+              createEdge(sourceNodeId, successNode.id),
+              createEdge(sourceNodeId, failedNode.id),
+              createEdge(failedNode.id, newIconButtonNode.id),
+            ],
+          ),
+        )
+
         break
       }
 

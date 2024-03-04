@@ -14,6 +14,7 @@ export default function NodeMenu(props: NodeMenuProps) {
   const [menuOpen, setMenuOpen] = useState(false)
   const currentNodeId = useNodeId()
   const delNode = useFStore((store) => store.delNode)
+  const addNode = useFStore((store) => store.addNode)
   const addMenuHandler = useFStore((state) => state.addMenuHandler)
   const removeMenuHandler = useFStore((state) => state.removeMenuHandler)
   const closeNodeMenu = useFStore((state) => state.closeNodeMenu)
@@ -21,8 +22,11 @@ export default function NodeMenu(props: NodeMenuProps) {
   const menu = useMemo<MenuProps['items']>(
     () => [
       {
-        key: 'failed',
-        label: '失败时',
+        key: 'addCallStatus',
+        label: '添加状态',
+        onClick: () => {
+          addNode(currentNodeId!, 'callStatusNode')
+        },
       },
       {
         type: 'divider',

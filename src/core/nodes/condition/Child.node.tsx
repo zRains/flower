@@ -25,7 +25,7 @@ export default memo(function ChildNode(props: ChildNodeProps) {
           </svg>
         </span>
       </div>
-      <NodeAttachMenu className="attach-menu" open={props.data.menuOpen} />
+      <NodeAttachMenu className="attach-menu" />
     </div>
   )
 })

@@ -9,7 +9,7 @@ export default memo(function IconButtonNode(props: IconButtonNodeProps) {
   return (
     <div className={style['icon-button-node-wrapper']}>
       <Handle type="target" position={Position.Top} isConnectable={props.isConnectable} />
-      <NodeAttachMenu open={props.data.menuOpen} />
+      <NodeAttachMenu />
       <Handle type="source" position={Position.Bottom} isConnectable={props.isConnectable} />
     </div>
   )
