@@ -23,7 +23,7 @@ export const initialNodes: Array<Node> = [
   {
     id: '3',
     type: 'conditionHeaderNode',
-    data: { __targetNodes: ['4', '5', '6'], __iconButtonNodes: ['7'] },
+    data: { __conditionChildNodes: ['4', '5', '6'], __conditionEndNode: '7' },
     position,
     draggable,
     connectable,

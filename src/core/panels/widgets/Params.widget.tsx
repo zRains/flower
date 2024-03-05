@@ -1,8 +1,8 @@
-import { Button, Form, Input, Select } from 'antd'
+import { Button, Form, Select } from 'antd'
+import cn from 'classnames'
 import { useState } from 'react'
 import { v4 as uuidv4 } from 'uuid'
 import ClickInputEditorWidget from './ClickInputEditor.widget'
-import cn from 'classnames'
 import style from './params.widget.module.less'
 
 export default function ParamsWidget() {
@@ -69,14 +69,7 @@ export default function ParamsWidget() {
                 ]}
               />
             </Form.Item>
-            <Form.Item
-              label="默认值"
-              name="defaultValue"
-              initialValue={'如何干掉产品'}
-              rules={[{ required: true, message: '请输入名称' }]}
-            >
-              <Input />
-            </Form.Item>
+            <Form.Item label="值"></Form.Item>
           </main>
         )}
       </div>

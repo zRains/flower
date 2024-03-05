@@ -37,23 +37,26 @@
       width: 320px;
       height: 100%;
       background-color: #111;
-      color: #fff;
 
-      &>header {
-        display: flex;
-        align-items: center;
-        height: 50px;
-        width: 100%;
-        border-bottom: 1px solid #343434;
-        padding: 0 16px;
-      }
-
-      .sidebar-form-container {
-        padding: 16px;
-        flex: 1;
+      .sidebar-form {
+        flex-grow: 1;
         overflow: auto;
+        color: #fff;
 
-        .sidebar-form {
+        &>header {
+          display: flex;
+          align-items: center;
+          height: 50px;
+          width: 100%;
+          border-bottom: 1px solid #343434;
+          padding: 0 16px;
+        }
+
+        .sidebar-form-item-container {
+          padding: 16px;
+          flex-grow: 1;
+          overflow: auto;
+
           .ant-form-item {
             margin-bottom: 0;
 
@@ -124,6 +127,17 @@
         background-color: #4081ff;
       }
     }
+
+    &.disabled {
+      .menu-trigger {
+        color: #ccc;
+        cursor: not-allowed;
+
+        &:hover {
+          background-color: #484848;
+        }
+      }
+    }
   }
 
   ul.ant-dropdown-menu {
@@ -139,7 +153,6 @@
     li {
       color: #fff;
 
-      //TODO: disabled样式未处理
       &.ant-dropdown-menu-item,
       .ant-dropdown-menu-submenu-title {
         color: #fff;
@@ -151,6 +164,20 @@
         &:hover {
           border-radius: 8px;
           background: rgba(255, 255, 255, .1);
+        }
+      }
+
+      // 激活状态
+      &.ant-dropdown-menu-item-active {
+        background-color: transparent;
+      }
+
+      // 禁用状态
+      &.ant-dropdown-menu-item-disabled {
+        color: #ffffffa6 !important;
+
+        &:hover {
+          background-color: transparent;
         }
       }
     }

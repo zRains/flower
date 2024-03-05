@@ -1,13 +1,22 @@
 import cn from 'classnames'
-import { memo } from 'react'
+import { memo, useMemo } from 'react'
 import { Handle, Position, type NodeProps } from 'reactflow'
 import NodeAttachMenu from '../NodeAttachMenu'
 import NodeMenu from '../NodeMenu'
 import style from './apiService.node.module.less'
+import useFStore from '../store'
 
 interface ApiServiceNodeProps extends NodeProps {}
 
 export default memo(function ApiServiceNode(props: ApiServiceNodeProps) {
+  const edges = useFStore((state) => state.edges)
+  const addNode = useFStore((state) => state.addNode)
+
+  const disabledAttachMenu = useMemo(
+    () => edges.filter((edge) => edge.source === props.id).length >= 2,
+    [edges, props.id],
+  )
+
   return (
     <div className={cn(style['api-service-node-wrapper'], { selected: props.selected })}>
       <div className="node-selected-halo"></div>
@@ -33,8 +42,23 @@ export default memo(function ApiServiceNode(props: ApiServiceNodeProps) {
         <section className="api-service-node-type-desc">类型：接口调用</section>
       </div>
       <Handle type="source" position={Position.Bottom} isConnectable={props.isConnectable} />
-      <NodeMenu className="api-service-node-menu-wrapper" />
-      <NodeAttachMenu className="attach-menu" />
+      <NodeMenu
+        className="api-service-node-menu-wrapper"
+        customMenu={[
+          {
+            key: 'addCallStatus',
+            label: '添加状态',
+            disabled: true,
+            onClick: () => {
+              addNode(props.id, 'callStatusNode')
+            },
+          },
+          {
+            type: 'divider',
+          },
+        ]}
+      />
+      <NodeAttachMenu disabled={disabledAttachMenu} className="attach-menu" />
     </div>
   )
 })

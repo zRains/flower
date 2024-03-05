@@ -1,5 +1,5 @@
 import { useEffect } from 'react'
-import ReactFlow, { Background, Panel, ReactFlowProvider } from 'reactflow'
+import ReactFlow, { Background, Panel, ReactFlowProvider, useOnSelectionChange } from 'reactflow'
 import RightSidebar from './RightSidebar'
 import style from './index.module.less'
 import useFStore from './store'
@@ -40,6 +40,11 @@ function LayoutFlow() {
   const closeNodeMenu = useFStore((store) => store.closeNodeMenu)
   const onNodesChange = useFStore((store) => store.onNodesChange)
   const onEdgesChange = useFStore((store) => store.onEdgesChange)
+  const setSelectedNodes = useFStore((store) => store.setSelectedNodes)
+
+  useOnSelectionChange({
+    onChange: ({ nodes }) => setSelectedNodes(nodes),
+  })
 
   useEffect(() => {
     console.log('re layout')

@@ -22,6 +22,7 @@ type MenuHandler = (open?: boolean) => void
 type FState = {
   nodes: Array<Node>
   edges: Array<Edge>
+  selectedNodes: Array<Node>
   startNode: Node
   endNode: Node
   menuHandlers: Array<{ id: string; handler: MenuHandler }>
@@ -30,8 +31,9 @@ type FState = {
 type FAction = {
   onNodesChange: OnNodesChange
   onEdgesChange: OnEdgesChange
-  setNodes: (nodes: Node[]) => void
-  setEdges: (edges: Edge[]) => void
+  setNodes: (nodes: Array<Node>) => void
+  setEdges: (edges: Array<Edge>) => void
+  setSelectedNodes: (nodes: Array<Node>) => void
   addMenuHandler: (id: string, handler: MenuHandler) => void
   removeMenuHandler: (id: string) => void
   dagreLayout: (direction?: 'TB' | 'LR') => void
@@ -54,6 +56,7 @@ type FAction = {
 const useFStore = create<FState & FAction>((set, get) => ({
   nodes: initialNodes,
   edges: initialEdges,
+  selectedNodes: [],
   startNode: initialNodes.find((node) => node.type === 'startNode')!,
   endNode: initialNodes.find((node) => node.type === 'endNode')!,
   menuHandlers: [],
@@ -72,6 +75,9 @@ const useFStore = create<FState & FAction>((set, get) => ({
   },
   setEdges: (edges: Edge[]) => {
     set({ edges })
+  },
+  setSelectedNodes: (nodes: Array<Node>) => {
+    set({ selectedNodes: nodes })
   },
   addMenuHandler: (id: string, handler: MenuHandler) => {
     set({ menuHandlers: [...get().menuHandlers, { id, handler }] })
@@ -120,28 +126,43 @@ const useFStore = create<FState & FAction>((set, get) => ({
         const targetNode = nodes.find((node) => node.id === sourceNodeId)!
         const newChildNode = createNode({ type, data: {} })
         const newHeaderToChildEdge = createEdge(sourceNodeId, newChildNode.id)
-        const newChildToButtonEdge = createEdge(newChildNode.id, targetNode.data.__iconButtonNodes[0])
+        const newChildToButtonEdge = createEdge(newChildNode.id, targetNode.data.__conditionEndNode)
 
         newChildNode.data = {
-          __targetNodes: [targetNode.data.__iconButtonNodes[0]],
-          __headerNodes: [targetNode.id],
+          __conditionStartNode: targetNode.id,
+          __conditionEndNode: targetNode.data.__conditionEndNode,
         }
 
         targetNode.data = {
           ...targetNode.data,
-          __targetNodes: [...targetNode.data.__targetNodes, newChildNode.id],
+          __conditionChildNodes: [...targetNode.data.__conditionChildNodes, newChildNode.id],
         }
 
         set(getLayoutedRes([...nodes, newChildNode], [...edges, newHeaderToChildEdge, newChildToButtonEdge]))
         break
       }
-
       case 'callStatusNode': {
         const { endNode } = get()
-        const successNode = createNode({ type, data: { succeed: true } })
+        const newIconButtonNode = createNode({ type: 'iconButtonNode' })
+        // 成功和失败节点记录开始和结束节点方便删除
+        const successNode = createNode({ type })
         const failedNode = createNode({ type })
         const sourceRelatedEdge = edges.find((edge) => edge.source === sourceNodeId)!
-        const newIconButtonNode = createNode({ type: 'iconButtonNode' })
+
+        successNode.data = {
+          succeed: true,
+          __statusStartNode: sourceNodeId,
+          __statusEndNode: newIconButtonNode.id,
+          __statusSuccessNode: successNode.id,
+          __statusFailedNode: failedNode.id,
+        }
+
+        failedNode.data = {
+          __statusStartNode: sourceNodeId,
+          __statusEndNode: newIconButtonNode.id,
+          __statusSuccessNode: successNode.id,
+          __statusFailedNode: failedNode.id,
+        }
 
         sourceRelatedEdge.source = successNode.id
         edges.forEach((edge) => {
@@ -191,29 +212,28 @@ const useFStore = create<FState & FAction>((set, get) => ({
         )
         break
       }
-
       case 'conditionChildNode': {
         const nodeMap = new Map(nodes.map((node) => [node.id, node]))
         let targetRelatedEdge = edges.find((edge) => edge.target === nodeId)!
         let sourceRelatedEdge = edges.find((edge) => edge.source === nodeId)!
         const relatedConditionHeaderNode = nodeMap.get(targetRelatedEdge.source)!
 
-        if (relatedConditionHeaderNode.data.__targetNodes.length > 2) {
-          relatedConditionHeaderNode.data.__targetNodes = relatedConditionHeaderNode.data.__targetNodes.filter(
-            (id: string) => nodeId !== id,
-          )
+        // 如果存在两个以上的条件子节点，则直接删除目标条件子节点
+        if (relatedConditionHeaderNode.data.__conditionChildNodes.length > 2) {
+          relatedConditionHeaderNode.data.__conditionChildNodes =
+            relatedConditionHeaderNode.data.__conditionChildNodes.filter((id: string) => nodeId !== id)
           set(
             getLayoutedRes(
               nodes.filter((node) => node.id !== nodeId),
               edges.filter((edge) => ![targetRelatedEdge.id, sourceRelatedEdge.id].includes(edge.id)),
             ),
           )
-        } /** 删除整个条件节点组 */ else {
-          const iconButtonNode = nodeMap.get(relatedConditionHeaderNode.data.__iconButtonNodes[0])!
+        } /** 否则，删除整个条件节点组 */ else {
+          const iconButtonNode = nodeMap.get(relatedConditionHeaderNode.data.__conditionEndNode)!
           const { nodeIds, edgeIds } = patchGraphRes(
             edges,
             relatedConditionHeaderNode.id,
-            relatedConditionHeaderNode.data.__iconButtonNodes[0],
+            relatedConditionHeaderNode.data.__conditionEndNode,
           )
 
           targetRelatedEdge = edges.find((edge) => edge.target === relatedConditionHeaderNode.id)!
@@ -227,6 +247,21 @@ const useFStore = create<FState & FAction>((set, get) => ({
           )
         }
 
+        break
+      }
+      case 'callStatusNode': {
+        // const nodeMap = new Map(nodes.map((node) => [node.id, node]))
+        // const relatedStatusNode = nodeMap.get(nodeId)!
+        // const relatedOtherwiseNode = nodeMap.get(
+        //   relatedStatusNode.data.succeed
+        //     ? relatedStatusNode.data.__statusFailedNode
+        //     : relatedStatusNode.data.__statusSuccessNode,
+        // )!
+        // const relatedStatusEndNode = nodeMap.get(relatedStatusNode.data.__statusEndNode)!
+        // const relatedTargetEdge = edges.find(edge => edge.target === nodeId)!
+        // const { nodeIds, edgeIds } = patchGraphRes(edges, nodeId, relatedStatusEndNode.id)
+
+        // const
         break
       }
 
@@ -244,17 +279,20 @@ function createConditionRes() {
   const newSecChildNode = createNode({ type: 'conditionChildNode' })
   const newHeaderNode = createNode({
     type: 'conditionHeaderNode',
-    data: { __targetNodes: [newFirstChildNode.id, newSecChildNode.id], __iconButtonNodes: [newIconButtonNode.id] },
+    data: {
+      __conditionChildNodes: [newFirstChildNode.id, newSecChildNode.id],
+      __conditionEndNode: newIconButtonNode.id,
+    },
   })
 
   newFirstChildNode.data = {
-    __targetNodes: [newIconButtonNode.id],
-    __headerNodes: [newHeaderNode.id],
+    __conditionStartNode: newHeaderNode.id,
+    __conditionEndNode: newIconButtonNode.id,
   }
 
   newSecChildNode.data = {
-    __targetNodes: [newIconButtonNode.id],
-    __headerNodes: [newHeaderNode.id],
+    __conditionStartNode: newHeaderNode.id,
+    __conditionEndNode: newIconButtonNode.id,
   }
 
   return {
