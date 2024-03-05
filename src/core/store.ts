@@ -235,18 +235,27 @@ const useFStore = create<FState & FAction>((set, get) => ({
         break
       }
       case 'callStatusNode': {
-        // const nodeMap = new Map(nodes.map((node) => [node.id, node]))
-        // const relatedStatusNode = nodeMap.get(nodeId)!
-        // const relatedOtherwiseNode = nodeMap.get(
-        //   relatedStatusNode.data.succeed
-        //     ? relatedStatusNode.data.__statusFailedNode
-        //     : relatedStatusNode.data.__statusSuccessNode,
-        // )!
-        // const relatedStatusEndNode = nodeMap.get(relatedStatusNode.data.__statusEndNode)!
-        // const relatedTargetEdge = edges.find(edge => edge.target === nodeId)!
-        // const { nodeIds, edgeIds } = patchGraphRes(edges, nodeId, relatedStatusEndNode.id)
+        const nodeMap = new Map(nodes.map((node) => [node.id, node]))
+        const relatedTargetNode = nodeMap.get(nodeId)!
+        const relatedOtherwiseNode = nodeMap.get(relatedTargetNode.data.__statusSuccessNode)!
+        const relatedOtherwiseNodeSourceEdge = edges.find((edge) => edge.source === relatedOtherwiseNode.id)!
+        const relatedHeaderSourceEdgeIds = edges
+          .filter((edge) => edge.source === relatedTargetNode.data.__statusStartNode)
+          .map((edge) => edge.id)
 
-        // const
+        relatedOtherwiseNodeSourceEdge.source = relatedTargetNode.data.__statusStartNode
+        set(
+          getLayoutedRes(
+            nodes.filter(
+              (node) =>
+                ![relatedTargetNode.data.__statusSuccessNode, relatedTargetNode.data.__statusFailedNode].includes(
+                  node.id,
+                ),
+            ),
+            edges.filter((edge) => !relatedHeaderSourceEdgeIds.includes(edge.id)),
+          ),
+        )
+
         break
       }
 
