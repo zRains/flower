@@ -28,7 +28,7 @@ export default memo(function MessageNode(props: MessageNodeProps) {
               />
             </svg>
           </div>
-          <span className="message-node-custom-name">消息提示</span>
+          <span className="message-node-custom-name">{props.data.name}</span>
         </section>
         <section className="message-node-type-desc">类型：消息提示 - 全局消息</section>
       </div>

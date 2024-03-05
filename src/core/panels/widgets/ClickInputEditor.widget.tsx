@@ -20,7 +20,13 @@ export default function ClickInputEditorWidget(props: ClickInputEditorWidgetProp
           autoFocus
         />
       ) : (
-        <Typography.Text ellipsis={{ tooltip: props.value }}>{props.value}</Typography.Text>
+        <Typography.Text
+          ellipsis={{
+            tooltip: { title: props.value, overlayClassName: style['ellipsis-tooltip-overlay'] },
+          }}
+        >
+          {props.value}
+        </Typography.Text>
       )}
       {!isEditing && (
         <span className="params-widget-name-edit-btn" onClick={() => setIsEditing(true)}>

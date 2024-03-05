@@ -124,11 +124,12 @@ const useFStore = create<FState & FAction>((set, get) => ({
       case 'conditionChildNode': {
         const { nodes } = get()
         const targetNode = nodes.find((node) => node.id === sourceNodeId)!
-        const newChildNode = createNode({ type, data: {} })
+        const newChildNode = createNode({ type })
         const newHeaderToChildEdge = createEdge(sourceNodeId, newChildNode.id)
         const newChildToButtonEdge = createEdge(newChildNode.id, targetNode.data.__conditionEndNode)
 
         newChildNode.data = {
+          ...newChildNode.data,
           __conditionStartNode: targetNode.id,
           __conditionEndNode: targetNode.data.__conditionEndNode,
         }
@@ -142,8 +143,6 @@ const useFStore = create<FState & FAction>((set, get) => ({
         break
       }
       case 'callStatusNode': {
-        const { endNode } = get()
-        const newIconButtonNode = createNode({ type: 'iconButtonNode' })
         // 成功和失败节点记录开始和结束节点方便删除
         const successNode = createNode({ type })
         const failedNode = createNode({ type })
@@ -152,35 +151,21 @@ const useFStore = create<FState & FAction>((set, get) => ({
         successNode.data = {
           succeed: true,
           __statusStartNode: sourceNodeId,
-          __statusEndNode: newIconButtonNode.id,
           __statusSuccessNode: successNode.id,
           __statusFailedNode: failedNode.id,
         }
 
         failedNode.data = {
           __statusStartNode: sourceNodeId,
-          __statusEndNode: newIconButtonNode.id,
           __statusSuccessNode: successNode.id,
           __statusFailedNode: failedNode.id,
         }
 
         sourceRelatedEdge.source = successNode.id
-        edges.forEach((edge) => {
-          if (edge.target === endNode.id) {
-            edge.target = newIconButtonNode.id
-          }
-        })
         set(
           getLayoutedRes(
-            [...nodes, successNode, failedNode, newIconButtonNode],
-            [
-              ...edges,
-              // 将失败节点连接到末尾的节点
-              createEdge(newIconButtonNode.id, endNode.id),
-              createEdge(sourceNodeId, successNode.id),
-              createEdge(sourceNodeId, failedNode.id),
-              createEdge(failedNode.id, newIconButtonNode.id),
-            ],
+            [...nodes, successNode, failedNode],
+            [...edges, createEdge(sourceNodeId, successNode.id), createEdge(sourceNodeId, failedNode.id)],
           ),
         )
 
@@ -277,21 +262,23 @@ function createConditionRes() {
   const newIconButtonNode = createNode({ type: 'iconButtonNode' })
   const newFirstChildNode = createNode({ type: 'conditionChildNode' })
   const newSecChildNode = createNode({ type: 'conditionChildNode' })
-  const newHeaderNode = createNode({
-    type: 'conditionHeaderNode',
-    data: {
-      __conditionChildNodes: [newFirstChildNode.id, newSecChildNode.id],
-      __conditionEndNode: newIconButtonNode.id,
-    },
-  })
+  const newHeaderNode = createNode({ type: 'conditionHeaderNode' })
 
   newFirstChildNode.data = {
+    ...newFirstChildNode.data,
     __conditionStartNode: newHeaderNode.id,
     __conditionEndNode: newIconButtonNode.id,
   }
 
   newSecChildNode.data = {
+    ...newSecChildNode.data,
     __conditionStartNode: newHeaderNode.id,
+    __conditionEndNode: newIconButtonNode.id,
+  }
+
+  newHeaderNode.data = {
+    // newHeaderNode不需要保留createNode创建的name属性，因此不需要...newHeaderNode.data
+    __conditionChildNodes: [newFirstChildNode.id, newSecChildNode.id],
     __conditionEndNode: newIconButtonNode.id,
   }
 
@@ -307,9 +294,11 @@ function createConditionRes() {
 }
 
 function createNode(nodeProps?: Partial<Node>): Node {
+  const nodeId = uuidv4()
+
   return {
-    data: {},
-    id: uuidv4(),
+    data: { name: nodeId },
+    id: nodeId,
     position: { x: 0, y: 0 },
     draggable: false,
     connectable: false,
@@ -318,8 +307,10 @@ function createNode(nodeProps?: Partial<Node>): Node {
 }
 
 function createEdge(sourceNodeId: string, targetNodeId: string, edgeProps?: Partial<EdgeProps>): Edge {
+  const edgeId = uuidv4()
+
   return {
-    id: uuidv4(),
+    id: edgeId,
     source: sourceNodeId,
     target: targetNodeId,
     animated: false,

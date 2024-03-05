@@ -15,7 +15,7 @@ export const initialNodes: Array<Node> = [
   {
     id: '2',
     type: 'apiServiceNode',
-    data: { label: 'node 2' },
+    data: { name: 'e34237e1-c4ce-4da7-bad4-f44f7c13873e' },
     position,
     draggable,
     connectable,
@@ -31,7 +31,7 @@ export const initialNodes: Array<Node> = [
   {
     id: '4',
     type: 'conditionChildNode',
-    data: {},
+    data: { name: '260784c0-8439-4d1c-afdc-42577e8afa00' },
     position,
     draggable,
     connectable,
@@ -39,7 +39,7 @@ export const initialNodes: Array<Node> = [
   {
     id: '5',
     type: 'conditionChildNode',
-    data: {},
+    data: { name: 'c0b58143-3f8f-4646-9bf6-10d8e57bf2aa' },
     position,
     draggable,
     connectable,
@@ -47,7 +47,7 @@ export const initialNodes: Array<Node> = [
   {
     id: '6',
     type: 'conditionChildNode',
-    data: {},
+    data: { name: 'ea593794-3641-4eda-9447-4198afc6d1fd' },
     position,
     draggable,
     connectable,
@@ -63,7 +63,7 @@ export const initialNodes: Array<Node> = [
   {
     id: '8',
     type: 'messageNode',
-    data: { label: 'node 3' },
+    data: { name: '4f0408a7-f859-41a7-af09-87f187c75bca' },
     position,
     draggable,
     connectable,
@@ -71,7 +71,7 @@ export const initialNodes: Array<Node> = [
   {
     id: '9',
     type: 'endNode',
-    data: { label: 'node 3' },
+    data: {},
     position,
     draggable,
     connectable,

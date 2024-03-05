@@ -10,6 +10,8 @@
 
 
       .react-flow__edge {
+        pointer-events: none;
+
         path.react-flow__edge-path {
           stroke-width: 2;
           background-color: #484848;
@@ -43,13 +45,17 @@
         overflow: auto;
         color: #fff;
 
-        &>header {
+        header.sidebar-form-header {
           display: flex;
           align-items: center;
           height: 50px;
           width: 100%;
           border-bottom: 1px solid #343434;
           padding: 0 16px;
+
+          .ant-form-item {
+            margin-bottom: 0;
+          }
         }
 
         .sidebar-form-item-container {

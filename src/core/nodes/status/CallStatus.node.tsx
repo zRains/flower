@@ -24,7 +24,7 @@ export default memo(function CallStatusNode(props: CallStatusNodeProps) {
           </svg>
         </span>
       </div>
-      <NodeAttachMenu className="attach-menu" />
+      <NodeAttachMenu disabled={!props.data.succeed} className="attach-menu" />
     </div>
   )
 })

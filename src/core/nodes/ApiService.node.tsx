@@ -37,7 +37,7 @@ export default memo(function ApiServiceNode(props: ApiServiceNodeProps) {
               />
             </svg>
           </div>
-          <span className="api-service-node-custom-name">{props.id}</span>
+          <span className="api-service-node-custom-name">{props.data.name}</span>
         </section>
         <section className="api-service-node-type-desc">类型：接口调用</section>
       </div>
@@ -48,7 +48,7 @@ export default memo(function ApiServiceNode(props: ApiServiceNodeProps) {
           {
             key: 'addCallStatus',
             label: '添加状态',
-            disabled: true,
+            disabled: disabledAttachMenu,
             onClick: () => {
               addNode(props.id, 'callStatusNode')
             },

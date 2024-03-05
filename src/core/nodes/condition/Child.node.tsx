@@ -13,7 +13,7 @@ export default memo(function ChildNode(props: ChildNodeProps) {
   return (
     <div className={cn(style['child-node-wrapper'], { selected: props.selected })}>
       <Handle type="target" position={Position.Top} isConnectable={props.isConnectable} />
-      <div className="child-node-content">分支{props.id}</div>
+      <div className="child-node-content">{props.data.name}</div>
       <Handle type="source" position={Position.Bottom} isConnectable={props.isConnectable} />
       <div className="child-node-operations">
         <span className="operation-trigger" onClick={() => delNode(props.id)}>
