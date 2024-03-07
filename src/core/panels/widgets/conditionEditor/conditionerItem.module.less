@@ -1,3 +1,22 @@
+.conditioner-item-icon-btn {
+  padding: 2px 4px;
+  color: #fff;
+  cursor: pointer;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 700;
+
+  svg {
+    font-size: 16px;
+    vertical-align: -3px;
+  }
+
+  &:hover,
+  &.active {
+    background-color: hsla(0, 0%, 100%, .2);
+  }
+}
+
 :global {
   :local(.conditioner-item) {
     display: flex;
@@ -35,27 +54,11 @@
       align-items: center;
       height: 100%;
       gap: 8px;
+      opacity: 0;
+      visibility: hidden;
 
-      .not-operating,
       .item-delete-btn {
-        padding: 2px 4px;
-        color: #fff;
-        cursor: pointer;
-        border-radius: 6px;
-        opacity: 0;
-        visibility: hidden;
-        font-size: 12px;
-        font-weight: 700;
-
-        svg {
-          font-size: 16px;
-          vertical-align: -3px;
-        }
-
-        &:hover,
-        &.active {
-          background-color: hsla(0, 0%, 100%, .2);
-        }
+        .conditioner-item-icon-btn()
       }
     }
 
@@ -64,8 +67,7 @@
     &:hover {
       background-color: hsla(0, 0%, 100%, .2);
 
-      .not-operating,
-      .item-delete-btn {
+      .conditioner-operations {
         opacity: 1;
         visibility: visible;
       }
@@ -94,5 +96,9 @@
       font-size: 18px;
       color: #fff;
     }
+  }
+
+  :local(.not-operating) {
+    .conditioner-item-icon-btn()
   }
 }

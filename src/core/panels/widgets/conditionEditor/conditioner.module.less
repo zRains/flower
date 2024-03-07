@@ -10,6 +10,10 @@
         display: flex;
         flex-wrap: nowrap;
 
+        .ant-form-item {
+          margin-bottom: 0;
+        }
+
         .is-not-operating {
           display: flex;
           align-items: center;
@@ -76,10 +80,22 @@
     }
 
     .conditioner-item-container {
-      .conditioner-item-add-btn {
+      display: flex;
+      justify-content: center;
+      flex-direction: column;
+
+      .conditioner-wrapper-inner {
+        margin-bottom: 8px;
+      }
+
+      .conditioner-item-add-btn>span {
         font-size: 13px;
         font-weight: 700;
         cursor: pointer;
+
+        svg {
+          vertical-align: -2px;
+        }
       }
     }
   }
