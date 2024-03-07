@@ -17,7 +17,7 @@ interface ConditionerProps {
 export default function Conditioner(props: ConditionerProps) {
   const { fieldPath = [], field, className, removeHandle } = props
   const form = Form.useFormInstance()
-  const formWatcher = Form.useWatch([...fieldPath]) ?? {}
+  const formWatcher = Form.useWatch([...fieldPath])
   const formWatcherRef = useRef(formWatcher)
   const formListUtilHandles = useRef<{
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -26,7 +26,7 @@ export default function Conditioner(props: ConditionerProps) {
   }>({})
 
   useEffect(() => {
-    if (formWatcherRef.current.type) {
+    if (formWatcherRef.current?.type) {
       if (
         formWatcherRef.current.type !== 'NORMAL' &&
         formWatcher.type === 'NORMAL' &&
@@ -50,7 +50,7 @@ export default function Conditioner(props: ConditionerProps) {
     formWatcherRef.current = formWatcher
   }, [formWatcher])
 
-  if (formWatcher.type === 'NORMAL') {
+  if (formWatcher?.type === 'NORMAL') {
     return <ConditionerItem fieldPath={fieldPath} field={field} removeHandle={removeHandle} />
   }
 
@@ -58,7 +58,7 @@ export default function Conditioner(props: ConditionerProps) {
     <div className={cn(style['conditioner-wrapper'], className)}>
       <section className="conditioner-selector-wrapper">
         <div className="conditioner-selector">
-          {formWatcher.not && <div className="is-not-operating">非</div>}
+          {formWatcher?.not && <div className="is-not-operating">非</div>}
           <Form.Item name={field ? [field.name, 'type'] : [...fieldPath, 'type']}>
             <ConditionTypeSelector />
           </Form.Item>
@@ -72,7 +72,7 @@ export default function Conditioner(props: ConditionerProps) {
           </div>
         </div>
       </section>
-      <Bracket color={formWatcher.type === 'AND' ? '#1bcd77' : '#ff8552'} />
+      {formWatcher?.type && <Bracket color={formWatcher.type === 'AND' ? '#1bcd77' : '#ff8552'} />}
       <div className="conditioner-item-container">
         <Form.List name={field ? [field.name, 'children'] : [...fieldPath, 'children']}>
           {(fields, { add, remove }) => {
@@ -90,25 +90,27 @@ export default function Conditioner(props: ConditionerProps) {
                     removeHandle={() => remove(field.name)}
                   />
                 ))}
-                <div
-                  className="conditioner-item-add-btn"
-                  style={{ color: formWatcher.type === 'AND' ? '#1bcd77' : '#ff8552' }}
-                >
-                  <span
-                    onClick={() =>
-                      formListUtilHandles.current.add?.({
-                        type: 'NORMAL',
-                        not: false,
-                        variable: '',
-                        operator: 'eq',
-                        value: '',
-                        children: [],
-                      })
-                    }
+                {formWatcher?.type && (
+                  <div
+                    className="conditioner-item-add-btn"
+                    style={{ color: formWatcher.type === 'AND' ? '#1bcd77' : '#ff8552' }}
                   >
-                    <PlusIcon /> <span>添加条件</span>
-                  </span>
-                </div>
+                    <span
+                      onClick={() =>
+                        formListUtilHandles.current.add?.({
+                          type: 'NORMAL',
+                          not: false,
+                          variable: '',
+                          operator: 'eq',
+                          value: '',
+                          children: [],
+                        })
+                      }
+                    >
+                      <PlusIcon /> <span>添加条件</span>
+                    </span>
+                  </div>
+                )}
               </>
             )
           }}

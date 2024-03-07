@@ -44,7 +44,7 @@ export default function ConditionEditor(props: ConditionEditorProps) {
         <Form
           onValuesChange={(_, v) => {
             // console.log('asdas', v)
-            b(v)
+            // b(v)
           }}
           form={form}
           initialValues={{
