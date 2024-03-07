@@ -1,4 +1,4 @@
-import { Form } from 'antd'
+import { Button, Form } from 'antd'
 import { useEffect, useState } from 'react'
 import Conditioner from './Conditioner'
 import style from './index.module.less'
@@ -8,7 +8,7 @@ interface ConditionEditorProps {}
 
 export default function ConditionEditor(props: ConditionEditorProps) {
   const [form] = Form.useForm<Condition>()
-  const [a, b] = useState<any>({})
+  // const [a, b] = useState<any>({})
 
   useEffect(() => {
     form.setFieldsValue({
@@ -53,14 +53,13 @@ export default function ConditionEditor(props: ConditionEditorProps) {
             variable: '',
             operator: 'eq',
             value: '',
-            children: [],
           }}
         >
           <Conditioner />
-          {/* <ConditionerItem /> */}
         </Form>
       </div>
-      <pre>{JSON.stringify(a, null, 2)}</pre>
+      {/* <Button onClick={() => console.log(form.getFieldsValue())}>inspect</Button>
+      <pre>{JSON.stringify(a, null, 2)}</pre> */}
     </>
   )
 }
