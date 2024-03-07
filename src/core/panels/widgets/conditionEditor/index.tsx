@@ -6,7 +6,7 @@ interface ConditionEditorProps {}
 export default function ConditionEditor(props: ConditionEditorProps) {
   return (
     <div className={style['condition-editor-wrapper']}>
-      <Conditioner />
+      <Conditioner trace />
     </div>
   )
 }

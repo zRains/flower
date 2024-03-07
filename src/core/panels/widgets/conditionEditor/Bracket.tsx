@@ -1,5 +1,5 @@
 import { CSSProperties, memo } from 'react'
-import style from './index.module.less'
+import style from './bracket.module.less'
 
 interface BracketProps {
   color?: string
