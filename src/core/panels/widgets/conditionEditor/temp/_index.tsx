@@ -10,6 +10,7 @@ const { Option } = Select
 
 function getData(type: ConditionType): Condition {
   const num = type === ConditionType.简单 ? 1 : 2
+
   return {
     type,
     group: {

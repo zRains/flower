@@ -1,7 +1,9 @@
-import { Input, Select, type SelectProps } from 'antd'
-import { useState, type CSSProperties } from 'react'
-import style from './conditionerItem.module.less'
+import { Form, Input, Select, Switch, type SelectProps } from 'antd'
+import cn from 'classnames'
+import { useState, type CSSProperties, useEffect } from 'react'
 import { ArrowDownIcon, DeleteIcon } from '../../../svgIcons'
+import style from './conditionerItem.module.less'
+import Conditioner from './Conditioner'
 
 const conditionOptions = [
   {
@@ -54,26 +56,18 @@ const conditionColor = {
 interface ConditionTypeSelectorProps extends SelectProps {}
 
 export function ConditionTypeSelector(props: ConditionTypeSelectorProps) {
-  const [type, setType] = useState<keyof typeof conditionColor>(props.value ?? 'NORMAL')
-
   return (
     <Select
       {...props}
       className={style['condition-type-selector']}
       options={conditionOptions}
-      value={type}
       style={
         {
           ...props.style,
-          '--selector-color': conditionColor[type],
+          '--selector-color': conditionColor[props.value as keyof typeof conditionColor],
         } as CSSProperties
       }
       suffixIcon={<ArrowDownIcon />}
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      onChange={(value: any, ...args) => {
-        setType(value)
-        props.onChange?.(value, ...args)
-      }}
     />
   )
 }
@@ -81,14 +75,55 @@ export function ConditionTypeSelector(props: ConditionTypeSelectorProps) {
 interface ConditionerItemProps {}
 
 export default function ConditionerItem(props: ConditionerItemProps) {
+  const form = Form.useFormInstance()
+  const formNotWatcher = Form.useWatch<boolean>(['not'], form)
+  const formTypeWatcher = Form.useWatch<string>(['type'], form)
+  const [sa, sA] = useState(true)
+
+  // if (formTypeWatcher === 'AND') {
+  //   // return <Conditioner trace />
+  //   return <span style={{ color: 'white' }}>1111</span>
+  // }
+
+  useEffect(() => {
+    console.log('asdasd', form)
+  }, [form])
+
   return (
     <section className={style['conditioner-item']}>
-      <ConditionTypeSelector />
-      <Input placeholder="选择变量" />
-      <Select className="operator-selector" suffixIcon={<ArrowDownIcon />} options={operatorOptions} />
+      <Switch checked={sa} onChange={sA} />
+      {formTypeWatcher === 'AND' ? <Conditioner /> : 'b'}
+      {formNotWatcher && <div className="is-not-operating">非</div>}
+
+      {sa && (
+        <Form.Item name="type">
+          <ConditionTypeSelector />
+        </Form.Item>
+      )}
+
+      <Form.Item name="variable">
+        <Input placeholder="选择变量" />
+      </Form.Item>
+
+      <Form.Item name="operator">
+        <Select className="operator-selector" suffixIcon={<ArrowDownIcon />} options={operatorOptions} />
+      </Form.Item>
+
       {/* <Select suffixIcon={<ArrowDownIcon />} /> */}
-      <Input />
+
+      <Form.Item name="value">
+        <Input />
+      </Form.Item>
+
       <div className="conditioner-operations">
+        <Form.Item name="not" noStyle>
+          <div
+            className={cn('not-operating', { active: formNotWatcher })}
+            onClick={() => form.setFieldValue(['not'], !formNotWatcher)}
+          >
+            非
+          </div>
+        </Form.Item>
         <div className="item-delete-btn">
           <DeleteIcon />
         </div>

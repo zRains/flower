@@ -1,9 +1,10 @@
 import cn from 'classnames'
 import { useState } from 'react'
+import { Form } from 'antd'
+import { DeleteIcon, PlusIcon } from '../../../svgIcons'
 import Bracket from './Bracket'
 import ConditionerItem, { ConditionTypeSelector } from './ConditionerItem'
-import style from './index.module.less'
-import { DeleteIcon } from '../../../svgIcons'
+import style from './conditioner.module.less'
 
 interface ConditionerProps {
   trace?: boolean
@@ -14,7 +15,7 @@ export default function Conditioner(props: ConditionerProps) {
   const [isNotOperating, setIsNotOperating] = useState(false)
 
   return (
-    <div className={cn(style['conditioner-wrapper'], `condition-${condition.toLocaleLowerCase()}`)}>
+    <div className={style['conditioner-wrapper']}>
       <section className="conditioner-selector-wrapper">
         <div className="conditioner-selector">
           {isNotOperating && <div className="is-not-operating">非</div>}
@@ -34,9 +35,13 @@ export default function Conditioner(props: ConditionerProps) {
       </section>
       <Bracket color={condition === 'AND' ? '#1bcd77' : '#ff8552'} />
       <div className="conditioner-item-container">
-        <ConditionerItem />
-        <ConditionerItem />
-        {props.trace && <Conditioner />}
+        {/* <ConditionerItem /> */}
+        {/* <ConditionerItem /> */}
+        {/* {props.trace && <Conditioner />} */}
+        {/* <ConditionerItem /> */}
+        <div className="conditioner-item-add-btn" style={{ color: condition === 'AND' ? '#1bcd77' : '#ff8552' }}>
+          <PlusIcon /> <span>添加条件</span>
+        </div>
       </div>
     </div>
   )
