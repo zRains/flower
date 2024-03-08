@@ -31,7 +31,7 @@ export const initialNodes: Array<Node> = [
   {
     id: '4',
     type: 'conditionChildNode',
-    data: { name: '260784c0-8439-4d1c-afdc-42577e8afa00' },
+    data: { name: '260784c0-8439-4d1c-afdc-42577e8afa00', __conditionEndNode: '7', __conditionStartNode: '3' },
     position,
     draggable,
     connectable,
@@ -39,7 +39,7 @@ export const initialNodes: Array<Node> = [
   {
     id: '5',
     type: 'conditionChildNode',
-    data: { name: 'c0b58143-3f8f-4646-9bf6-10d8e57bf2aa' },
+    data: { name: 'c0b58143-3f8f-4646-9bf6-10d8e57bf2aa', __conditionEndNode: '7', __conditionStartNode: '3' },
     position,
     draggable,
     connectable,
@@ -47,7 +47,7 @@ export const initialNodes: Array<Node> = [
   {
     id: '6',
     type: 'conditionChildNode',
-    data: { name: 'ea593794-3641-4eda-9447-4198afc6d1fd' },
+    data: { name: 'ea593794-3641-4eda-9447-4198afc6d1fd', __conditionEndNode: '7', __conditionStartNode: '3' },
     position,
     draggable,
     connectable,

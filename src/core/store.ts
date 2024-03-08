@@ -205,12 +205,18 @@ const useFStore = create<FState & FAction>((set, get) => ({
 
         // 如果存在两个以上的条件子节点，则直接删除目标条件子节点
         if (relatedConditionHeaderNode.data.__conditionChildNodes.length > 2) {
+          const targetNode = nodeMap.get(nodeId)!
+          const { nodeIds, edgeIds } = patchGraphRes(edges, nodeId, targetNode.data.__conditionEndNode, false)
+
+          nodeIds.add(nodeId)
+          edgeIds.add(targetRelatedEdge.id)
           relatedConditionHeaderNode.data.__conditionChildNodes =
             relatedConditionHeaderNode.data.__conditionChildNodes.filter((id: string) => nodeId !== id)
+
           set(
             getLayoutedRes(
-              nodes.filter((node) => node.id !== nodeId),
-              edges.filter((edge) => ![targetRelatedEdge.id, sourceRelatedEdge.id].includes(edge.id)),
+              nodes.filter((node) => !nodeIds.has(node.id)),
+              edges.filter((edge) => !edgeIds.has(edge.id)),
             ),
           )
         } /** 否则，删除整个条件节点组 */ else {
@@ -335,8 +341,8 @@ function createEdge(sourceNodeId: string, targetNodeId: string, edgeProps?: Part
  * @param endNodeId 结束节点
  * @returns
  */
-function patchGraphRes(edges: Array<Edge>, startNodeId: string, endNodeId: string) {
-  const relatedNodeIds: string[] = [startNodeId, endNodeId]
+function patchGraphRes(edges: Array<Edge>, startNodeId: string, endNodeId: string, includeHeadAndTail = true) {
+  const relatedNodeIds: string[] = includeHeadAndTail ? [startNodeId, endNodeId] : []
   const relatedEdgeIds: string[] = []
   const recur = (targetNodeId: string) => {
     edges

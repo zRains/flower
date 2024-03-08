@@ -5,6 +5,7 @@ import style from './index.module.less'
 import FlowerPanel from './panels/Flower.panel'
 import StartPanel from './panels/Start.panel'
 import ApiServicePanel from './panels/apiService.panel'
+import ConditionChildPanel from './panels/conditionChild.panel'
 import MessagePanel from './panels/message.panel'
 import ClickInputEditorWidget from './panels/widgets/ClickInputEditor.widget'
 import useFStore from './store'
@@ -26,6 +27,8 @@ export default function RightSidebar() {
           return ApiServicePanel
         case 'messageNode':
           return MessagePanel
+        case 'conditionChildNode':
+          return ConditionChildPanel
         default:
           return () => <></>
       }

@@ -1,6 +1,6 @@
 import { Form, Input, Select, type FormListFieldData, type SelectProps } from 'antd'
 import cn from 'classnames'
-import { useRef, type CSSProperties } from 'react'
+import { type CSSProperties } from 'react'
 import { ArrowDownIcon, DeleteIcon } from '../../../svgIcons'
 import style from './conditionerItem.module.less'
 

@@ -43,19 +43,19 @@ export default function ParamsWidget() {
                 options={[
                   {
                     value: 'jack',
-                    label: '如何干掉产品',
+                    label: 'a',
                   },
                   {
                     value: 'lucy',
-                    label: '如何升职加薪',
+                    label: 'b',
                   },
                   {
                     value: 'disabled',
-                    label: '母猪的产后护理',
+                    label: 'c',
                   },
                   {
                     value: 'Yiminghe',
-                    label: '谢谢',
+                    label: 'd',
                   },
                 ]}
               />
