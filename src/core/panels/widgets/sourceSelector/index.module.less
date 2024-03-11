@@ -12,6 +12,17 @@
         border-color: #343434;
         border-radius: 6px;
         color: #fff;
+
+        .source-selector-tag-wrapper {
+          display: inline-block;
+          cursor: pointer;
+
+          .source-selector-tag {
+            color: #66c2ff;
+            background-color: #66c2ff26;
+            border: none;
+          }
+        }
       }
 
       .ant-select-arrow {
@@ -41,7 +52,6 @@
   :local(.source-selector-tag-popover) {
     .ant-popover-content {
       box-shadow: 0 4px 12px #0000004d;
-      user-select: all;
 
       .ant-popover-inner {
         background-color: #252525;
@@ -53,12 +63,22 @@
           padding-top: 0;
           padding-bottom: 0;
 
-          .title-box {
+          .tag-popover-title-box {
             display: flex;
             justify-content: space-between;
             align-items: center;
             font-weight: normal;
             padding: 8px 0;
+
+            .tag-popover-close-btn {
+              span {
+                display: inline-flex;
+                align-items: center;
+                text-align: center;
+                cursor: pointer;
+                vertical-align: -2px;
+              }
+            }
           }
         }
       }

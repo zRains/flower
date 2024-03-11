@@ -1,8 +1,12 @@
-import { Select, Dropdown, Tag, type SelectProps, type MenuProps, Popover, InputNumber, Input } from 'antd'
-import { PlusIcon } from '../../../svgIcons'
-import style from './index.module.less'
-import { useMemo, useState } from 'react'
+import { useClickAway } from 'ahooks'
+import { Dropdown, Form, Popover, Select, Tag, type MenuProps } from 'antd'
+import { createContext, useCallback, useContext, useEffect, useMemo, useState, type ReactNode } from 'react'
 import { v4 as uuidv4 } from 'uuid'
+import { CloseIcon, PlusIcon } from '../../../svgIcons'
+import style from './index.module.less'
+import ConstSource, { type ConstType } from './sources/Const.source'
+
+const MenuItemMapContext = createContext<Map<string, string>>(new Map())
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 interface SourceItem<Data = any> {
@@ -38,6 +42,8 @@ export default function SourceSelector() {
       data: {},
     },
   ])
+
+  /** 菜单项 */
   const menuItems: NonNullable<MenuProps['items']> = useMemo(
     () => [
       {
@@ -48,8 +54,7 @@ export default function SourceSelector() {
             key: 'const-number',
             label: '数字常量',
             onClick: () => {
-              setInnerValues((values) => [
-                ...values,
+              setInnerValues([
                 {
                   id: uuidv4(),
                   type: 'const-number',
@@ -59,16 +64,43 @@ export default function SourceSelector() {
             },
           },
           {
-            key: 'const-text',
+            key: 'const-string',
             label: '文本常量',
+            onClick: () => {
+              setInnerValues([
+                {
+                  id: uuidv4(),
+                  type: 'const-string',
+                  data: {},
+                },
+              ])
+            },
           },
           {
             key: 'const-boolean',
             label: '布尔常量',
+            onClick: () => {
+              setInnerValues([
+                {
+                  id: uuidv4(),
+                  type: 'const-boolean',
+                  data: {},
+                },
+              ])
+            },
           },
           {
             key: 'const-datetime',
             label: '时间常量',
+            onClick: () => {
+              setInnerValues([
+                {
+                  id: uuidv4(),
+                  type: 'const-datetime',
+                  data: {},
+                },
+              ])
+            },
           },
         ],
       },
@@ -93,6 +125,7 @@ export default function SourceSelector() {
     ],
     [],
   )
+
   const menuItemMap = useMemo(() => createMenuItemMap(menuItems), [menuItems])
   const { innerOptions, innerSelectedValues } = useMemo(() => {
     const selectedValues: Array<string> = []
@@ -100,7 +133,7 @@ export default function SourceSelector() {
       selectedValues.push(item.id)
 
       return {
-        label: menuItemMap.get(item.type),
+        label: item.type,
         value: item.id,
       }
     })
@@ -109,7 +142,20 @@ export default function SourceSelector() {
       innerOptions: options,
       innerSelectedValues: selectedValues,
     }
-  }, [innerValues, menuItemMap])
+  }, [innerValues])
+  const [popoverHandles, setPopoverHandles] = useState<Record<string, (open?: boolean) => void>>({})
+  const setupPopoverHandles = useCallback((id: string, handle?: (open?: boolean) => void) => {
+    setPopoverHandles((collection) => {
+      if (handle) {
+        collection[id] = handle
+      } else {
+        console.log('remove popoverCloseHandle: ', id)
+        Reflect.deleteProperty(collection, id)
+      }
+
+      return { ...collection }
+    })
+  }, [])
 
   const handleChange = (valueArr: Array<string>) => {
     setInnerValues((values) => {
@@ -117,61 +163,136 @@ export default function SourceSelector() {
     })
   }
 
-  return (
-    <div className={style['source-selector-wrapper']}>
-      <Select<Array<string>>
-        mode="tags"
-        className="source-selector"
-        style={{ width: '100%' }}
-        onChange={handleChange}
-        options={innerOptions}
-        value={innerSelectedValues}
-        tagRender={(tagProps) => {
-          // console.log('tagProps', tagProps)
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const tagValueChangeHandle = useCallback((id: string, values: any) => {
+    setInnerValues((_innerValues) => {
+      const targetValue = _innerValues.find((_innerValue) => _innerValue.id === id)!
 
-          return (
-            <div
-              onClick={(event) => {
-                event.preventDefault()
-                event.stopPropagation()
-              }}
-              onMouseDown={(e) => {
-                e.preventDefault()
-                e.stopPropagation()
-              }}
-            >
-              <Popover
-                // open
-                overlayClassName={style['source-selector-tag-popover']}
-                trigger={['click']}
-                showArrow={false}
-                title={<div className="title-box">数字常量</div>}
-                placement="bottomLeft"
-                getPopupContainer={(triggerNode) => triggerNode.parentElement!}
-                content={
-                  <div>
-                    {/* <InputNumber min={1} max={10} defaultValue={3} /> */}
-                    <Input />
-                  </div>
+      targetValue.data = values
+
+      return [..._innerValues]
+    })
+  }, [])
+
+  useClickAway(() => {
+    Object.values(popoverHandles).forEach((handle) => handle(false))
+  }, [])
+
+  return (
+    <MenuItemMapContext.Provider value={menuItemMap}>
+      <div className={style['source-selector-wrapper']}>
+        <Select<Array<string>>
+          mode="tags"
+          className="source-selector"
+          style={{ width: '100%' }}
+          onChange={handleChange}
+          options={innerOptions}
+          value={innerSelectedValues}
+          tagRender={(tagProps) => {
+            return (
+              <SelectorRenderTag
+                id={tagProps.value}
+                popoverTitle="数字常量"
+                tagLabel={tagProps.label}
+                setPopoverHandles={setupPopoverHandles}
+                tagValueChangeHandle={tagValueChangeHandle}
+                onClick={() =>
+                  Object.entries(popoverHandles).forEach(([id, handle]) =>
+                    handle(id === tagProps.value ? void 0 : false),
+                  )
                 }
-              >
-                <Tag color="#87d068">{tagProps.label}</Tag>
-              </Popover>
+              />
+            )
+          }}
+          suffixIcon={
+            <Dropdown trigger={['click']} menu={{ items: menuItems }}>
+              <div>
+                <PlusIcon />
+              </div>
+            </Dropdown>
+          }
+          open={false}
+          dropdownRender={() => <></>}
+          showSearch={false}
+          showArrow
+        />
+        <pre style={{ color: 'white', marginTop: 200 }}>{JSON.stringify(innerValues, null, 2)}</pre>
+      </div>
+    </MenuItemMapContext.Provider>
+  )
+}
+
+interface SelectorRenderTagProps {
+  id: string
+  tagLabel: ReactNode
+  popoverTitle?: string
+  setPopoverHandles: (id: string, handle?: (open?: boolean) => void) => void
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  tagValueChangeHandle: (id: string, values: any) => void
+  onClick?: () => void
+}
+
+function SelectorRenderTag(props: SelectorRenderTagProps) {
+  const [form] = Form.useForm()
+  const menuItemMap = useContext(MenuItemMapContext)
+  const { id, tagLabel, popoverTitle, setPopoverHandles, tagValueChangeHandle, onClick } = props
+  const [popoverOpen, setPopoverOpen] = useState(false)
+
+  useEffect(() => {
+    setPopoverHandles?.(id, (open?: boolean) => setPopoverOpen(typeof open === 'undefined' ? (o) => !o : open))
+
+    return () => setPopoverHandles?.(id)
+  }, [id, setPopoverHandles])
+
+  return (
+    <div
+      className="source-selector-tag-wrapper"
+      // 阻止删除标签
+      onKeyDown={(event) => event.stopPropagation()}
+      // onKeyUp={(event) => event.stopPropagation()}
+      // 阻止聚焦向上传递至选择器
+      onFocus={(event) => event.stopPropagation()}
+      // 阻止弹出下拉面板
+      onMouseDown={(event) => event.stopPropagation()}
+      // 阻止选择器重新聚焦
+      onClick={(event) => {
+        // Object.values(tagPopoverCloseHandleMap).forEach((handle) => handle())
+        event.stopPropagation()
+      }}
+    >
+      <Popover
+        overlayClassName={style['source-selector-tag-popover']}
+        trigger={['click']}
+        open={popoverOpen}
+        showArrow={false}
+        placement="bottomLeft"
+        title={
+          popoverTitle ? (
+            <div className="tag-popover-title-box">
+              <div className="tag-popover-title">{menuItemMap.get(tagLabel as string)}</div>
+              <div className="tag-popover-close-btn">
+                <span onClick={onClick}>
+                  <CloseIcon />
+                </span>
+              </div>
             </div>
-          )
-        }}
-        suffixIcon={
-          <Dropdown trigger={['click']} menu={{ items: menuItems }}>
-            <div>
-              <PlusIcon />
-            </div>
-          </Dropdown>
+          ) : undefined
         }
-        open={false}
-        showSearch={false}
-        dropdownRender={() => <></>}
-        showArrow
-      />
+        content={
+          <Form
+            form={form}
+            onValuesChange={(_, values) => {
+              tagValueChangeHandle(id, values)
+            }}
+          >
+            <ConstSource type={tagLabel as ConstType} />
+          </Form>
+        }
+      >
+        <Tag className="source-selector-tag" onClick={onClick}>
+          {menuItemMap.get(tagLabel as string)}
+        </Tag>
+      </Popover>
     </div>
   )
 }
