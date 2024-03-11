@@ -184,7 +184,6 @@ export default function SourceSelector() {
         <Select<Array<string>>
           mode="tags"
           className="source-selector"
-          style={{ width: '100%' }}
           onChange={handleChange}
           options={innerOptions}
           value={innerSelectedValues}
@@ -196,11 +195,11 @@ export default function SourceSelector() {
                 tagLabel={tagProps.label}
                 setPopoverHandles={setupPopoverHandles}
                 tagValueChangeHandle={tagValueChangeHandle}
-                onClick={() =>
+                onClick={() => {
                   Object.entries(popoverHandles).forEach(([id, handle]) =>
                     handle(id === tagProps.value ? void 0 : false),
                   )
-                }
+                }}
               />
             )
           }}
@@ -216,7 +215,7 @@ export default function SourceSelector() {
           showSearch={false}
           showArrow
         />
-        <pre style={{ color: 'white', marginTop: 200 }}>{JSON.stringify(innerValues, null, 2)}</pre>
+        {/* <pre style={{ color: 'white', marginTop: 200 }}>{JSON.stringify(innerValues, null, 2)}</pre> */}
       </div>
     </MenuItemMapContext.Provider>
   )

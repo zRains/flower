@@ -1,3 +1,97 @@
 :global {
-  :local(.api-service-panel-wrapper) {}
+  :local(.api-service-panel-wrapper) {
+    .api-service-inputs {
+      margin-top: 12px;
+
+      .api-service-inputs-label {
+        margin-bottom: 8px;
+        font-size: 13px;
+      }
+    }
+  }
+
+  :local(.object-configure) {
+    display: flex;
+    flex-direction: column;
+    background-color: #252525;
+    width: 100%;
+    padding: 12px;
+    margin-bottom: 16px;
+    border-radius: 6px;
+
+    .object-configure-header {
+      display: flex;
+      margin-bottom: 16px;
+      height: 24px;
+
+      .collapsed-btn {
+        height: 24px;
+        width: 24px;
+        color: #fff;
+        flex-shrink: 0;
+        border-radius: 6px;
+        text-align: center;
+        cursor: pointer;
+        transition: transform .25s;
+        font-size: 16px;
+
+        svg {
+          vertical-align: -2px;
+        }
+      }
+
+      .object-configure-header-title {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+
+        &>span {
+          line-height: 24px;
+        }
+
+        &>.object-configure-header-tag {
+          margin-right: 0;
+          line-height: 18px;
+        }
+      }
+
+      &.isCollapsed {
+        margin-bottom: 0;
+
+        .collapsed-btn {
+          transform: rotate(-90deg);
+        }
+      }
+    }
+
+    .object-configure-item-container {
+      .input-config-item {
+        display: flex;
+        flex-direction: column;
+
+        .input-config-item-label {
+          margin-bottom: 10px;
+          font-size: 13px;
+          color: #ffffffa6;
+          user-select: none;
+        }
+
+        .ant-form-item.ant-form-item.ant-form-item {
+          margin-top: 0;
+        }
+
+        &:not(:last-child) {
+          margin-bottom: 16px;
+        }
+      }
+    }
+
+    .is-darker {
+      background-color: #111;
+
+      .source-selector .ant-select-selector.ant-select-selector {
+        background-color: #252525;
+      }
+    }
+  }
 }
