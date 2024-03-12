@@ -1,95 +1,119 @@
 :global {
   :local(.api-service-panel-wrapper) {
-    .api-service-inputs {
+
+    .api-service-inputs,
+    .api-service-outputs {
       margin-top: 12px;
 
-      .api-service-inputs-label {
+      .api-service-inputs-label,
+      .api-service-outputs-label {
         margin-bottom: 8px;
         font-size: 13px;
       }
     }
   }
 
-  :local(.object-configure) {
-    display: flex;
-    flex-direction: column;
+  :local(.object-configure).ant-collapse {
+    border: none;
     background-color: #252525;
     width: 100%;
     padding: 12px;
     margin-bottom: 16px;
     border-radius: 6px;
 
-    .object-configure-header {
-      display: flex;
-      margin-bottom: 16px;
-      height: 24px;
+    .ant-collapse-item {
+      border-bottom: none;
 
-      .collapsed-btn {
-        height: 24px;
-        width: 24px;
+      .ant-collapse-header {
+        padding: 0;
         color: #fff;
-        flex-shrink: 0;
-        border-radius: 6px;
-        text-align: center;
-        cursor: pointer;
-        transition: transform .25s;
-        font-size: 16px;
 
-        svg {
-          vertical-align: -2px;
-        }
-      }
-
-      .object-configure-header-title {
-        display: flex;
-        align-items: center;
-        gap: 8px;
-
-        &>span {
-          line-height: 24px;
-        }
-
-        &>.object-configure-header-tag {
-          margin-right: 0;
-          line-height: 18px;
-        }
-      }
-
-      &.isCollapsed {
-        margin-bottom: 0;
-
-        .collapsed-btn {
+        .ant-collapse-expand-icon {
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          height: 22px;
+          width: 22px;
           transform: rotate(-90deg);
+          transition: transform .2s;
+
+          svg.ant-collapse-arrow {
+            font-size: 18px !important;
+            margin-right: 0 !important;
+          }
+        }
+
+        .object-configure-header {
+          display: flex;
+          height: 22px;
+
+          .object-configure-header-title {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+
+            &>span {
+              line-height: 24px;
+            }
+
+            &>.object-configure-header-tag {
+              margin-right: 0;
+              line-height: 18px;
+            }
+          }
+
+          &.isCollapsed {
+            margin-bottom: 0;
+
+            .collapsed-btn {
+              transform: rotate(-90deg);
+            }
+          }
         }
       }
-    }
 
-    .object-configure-item-container {
-      .input-config-item {
-        display: flex;
-        flex-direction: column;
+      .ant-collapse-content {
+        border: none;
+        background-color: transparent;
 
-        .input-config-item-label {
-          margin-bottom: 10px;
-          font-size: 13px;
-          color: #ffffffa6;
-          user-select: none;
+        .ant-collapse-content-box {
+          padding: 0;
+
+          .object-configure-item-container {
+            margin-top: 12px;
+
+            .input-config-item {
+              display: flex;
+              flex-direction: column;
+
+              .input-config-item-label {
+                margin-bottom: 10px;
+                font-size: 13px;
+                color: #ffffffa6;
+                user-select: none;
+              }
+
+              .ant-form-item.ant-form-item.ant-form-item {
+                margin-top: 0;
+              }
+
+              &:not(:last-child) {
+                margin-bottom: 16px;
+              }
+            }
+          }
         }
+      }
 
-        .ant-form-item.ant-form-item.ant-form-item {
-          margin-top: 0;
-        }
-
-        &:not(:last-child) {
-          margin-bottom: 16px;
-        }
+      &.ant-collapse-item-active>.ant-collapse-header .ant-collapse-expand-icon {
+        transform: rotate(0);
       }
     }
 
     .is-darker {
       background-color: #111;
 
-      .source-selector .ant-select-selector.ant-select-selector {
+      &>.input-config-item .source-selector .ant-select-selector.ant-select-selector {
         background-color: #252525;
       }
     }
