@@ -1,9 +1,9 @@
 import { useEffect } from 'react'
-import ReactFlow, { Background, Panel, ReactFlowProvider, useOnSelectionChange } from 'reactflow'
+import ReactFlow, { Background, ReactFlowProvider, useOnSelectionChange } from 'reactflow'
+import 'reactflow/dist/style.css'
 import RightSidebar from './RightSidebar'
 import style from './index.module.less'
 import useFStore from './store'
-import 'reactflow/dist/style.css'
 
 /** Custom nodes */
 import ApiServiceNode from './nodes/ApiService.node'
@@ -78,11 +78,6 @@ function LayoutFlow() {
           fitView
         >
           <Background />
-          <Panel position="top-right">
-            <button onClick={() => dagreLayout('TB')}>Save</button>
-            {/* <button onClick={() => addNode()}>Add Node</button> */}
-            {/* <button onClick={() => onLayout('LR')}>LR layout</button> */}
-          </Panel>
         </ReactFlow>
       </section>
       <RightSidebar />

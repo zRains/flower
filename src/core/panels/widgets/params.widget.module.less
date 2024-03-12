@@ -1,43 +1,105 @@
 :global {
   :local(.params-widget-wrapper) {
-    .params-config-wrapper {
-      display: flex;
-      flex-direction: column;
-      background-color: #252525;
-      width: 100%;
-      padding: 12px;
-      margin-bottom: 16px;
+    // .params-config-wrapper {
+    //   display: flex;
+    //   flex-direction: column;
+    //   background-color: #252525;
+    //   width: 100%;
+    //   padding: 12px;
+    //   margin-bottom: 16px;
+    //   border-radius: 6px;
+
+    //   .params-widget-header {
+    //     display: flex;
+    //     margin-bottom: 16px;
+    //     height: 24px;
+
+    //     .collapsed-btn,
+    //     .delete-btn {
+    //       height: 24px;
+    //       width: 24px;
+    //       color: #fff;
+    //       flex-shrink: 0;
+    //       border-radius: 6px;
+    //       text-align: center;
+    //       cursor: pointer;
+    //       transition: transform .25s;
+    //       font-size: 16px;
+
+    //       svg {
+    //         vertical-align: -2px;
+    //       }
+    //     }
+
+    //     .params-widget-name {
+    //       display: flex;
+    //       flex-grow: 1;
+    //       overflow: hidden;
+
+    //       .params-widget-name-box {
+    //         overflow: hidden;
+    //         width: 90%;
+
+    //         .ant-form-item-control-input {
+    //           min-height: 24px;
+    //         }
+    //       }
+    //     }
+
+    //     &.isCollapsed {
+    //       margin-bottom: 0;
+
+    //       .collapsed-btn {
+    //         transform: rotate(-90deg);
+    //       }
+    //     }
+    //   }
+    // }
+
+    .params-add-btn {
+      background-color: #252525 !important;
       border-radius: 6px;
+      border: none;
+      color: #fff !important;
+      font-size: 12px;
+    }
+  }
 
-      .params-widget-header {
-        display: flex;
-        margin-bottom: 16px;
-        height: 24px;
+  :local(.params-item).ant-collapse {
+    border: none;
+    background-color: #252525;
+    width: 100%;
+    padding: 12px;
+    margin-bottom: 16px;
+    border-radius: 6px;
 
-        .collapsed-btn,
-        .delete-btn {
-          height: 24px;
-          width: 24px;
-          color: #fff;
-          flex-shrink: 0;
-          border-radius: 6px;
-          text-align: center;
-          cursor: pointer;
-          transition: transform .25s;
-          font-size: 16px;
+    .ant-collapse-item {
+      border-bottom: none;
 
-          svg {
-            vertical-align: -2px;
+      .ant-collapse-header {
+        padding: 0;
+        color: #fff;
+
+        .ant-collapse-expand-icon {
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          height: 22px;
+          width: 22px;
+          transform: rotate(-90deg);
+          transition: transform .2s;
+
+          svg.ant-collapse-arrow {
+            font-size: 18px !important;
+            margin-right: 0 !important;
           }
         }
 
-        .params-widget-name {
-          display: flex;
-          flex-grow: 1;
+        .ant-collapse-header-text {
+          display: block;
           overflow: hidden;
 
-          .params-widget-name-box {
-            overflow: hidden;
+          .params-item-header .params-item-name-box {
             width: 90%;
 
             .ant-form-item-control-input {
@@ -46,22 +108,35 @@
           }
         }
 
-        &.isCollapsed {
-          margin-bottom: 0;
+        .ant-collapse-extra {
+          flex-shrink: 0;
+          height: 24px;
+          width: 24px;
+          text-align: center;
+          cursor: pointer;
 
-          .collapsed-btn {
-            transform: rotate(-90deg);
+          svg {
+            vertical-align: -2px;
           }
         }
       }
-    }
 
-    .params-add-btn {
-      background-color: #252525 !important;
-      border-radius: 6px;
-      border: none;
-      color: #fff !important;
-      font-size: 12px;
+      .ant-collapse-content {
+        border: none;
+        background-color: transparent;
+
+        .ant-collapse-content-box {
+          padding: 0;
+
+          .params-item-container {
+            margin-top: 12px;
+          }
+        }
+      }
+
+      &.ant-collapse-item-active>.ant-collapse-header .ant-collapse-expand-icon {
+        transform: rotate(0);
+      }
     }
   }
 }

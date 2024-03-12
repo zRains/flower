@@ -155,6 +155,7 @@ function ObjectConfigure(props: ApiServiceConfigureProps) {
       expandIcon={() => <ArrowDownIcon />}
     >
       <Collapse.Panel
+        forceRender
         header={
           <header className={cn('object-configure-header', { isCollapsed: false })}>
             <div className="object-configure-header-title">
