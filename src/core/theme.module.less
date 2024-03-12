@@ -1,0 +1,87 @@
+:global {
+  :local(.flower-dropdown):is(.ant-dropdown, .ant-dropdown-menu-submenu) {
+    ul.ant-dropdown-menu {
+      padding: 5px 8px;
+      border-radius: 12px;
+      background-color: #343434;
+      box-shadow: none;
+
+      .ant-dropdown-menu-item-divider {
+        background-color: #484848;
+      }
+
+      li {
+        color: #fff;
+
+        &.ant-dropdown-menu-item,
+        .ant-dropdown-menu-submenu-title {
+          color: #fff;
+
+          .ant-dropdown-menu-submenu-arrow-icon {
+            color: #fff;
+          }
+
+          &:hover {
+            border-radius: 8px;
+            background: rgba(255, 255, 255, .1);
+          }
+        }
+
+        // 激活状态
+        &.ant-dropdown-menu-item-active {
+          background-color: transparent;
+        }
+
+        // 禁用状态
+        &.ant-dropdown-menu-item-disabled {
+          color: #ffffffa6 !important;
+
+          &:hover {
+            background-color: transparent;
+          }
+        }
+
+        // 子菜单禁用状态
+        &.ant-dropdown-menu-submenu-disabled {
+          .ant-dropdown-menu-submenu-title {
+            background-color: transparent;
+            color: #ffffffa6;
+
+            .ant-dropdown-menu-submenu-expand-icon {
+              span {
+                background-color: transparent;
+                color: #ffffffa6;
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+
+  :local(.flower-input).ant-input {
+    border-radius: 4px;
+    border-color: #252525;
+    color: #fff;
+    background-color: #252525;
+  }
+
+  :local(.flower-select).ant-select.ant-select {
+    color: #fff;
+
+    .ant-select-selector {
+      height: 100%;
+      border: 1px solid transparent;
+      background-color: transparent;
+      border-radius: 4px;
+      font-weight: 400;
+      line-height: 20px;
+      background-color: #252525;
+    }
+
+    .ant-select-arrow {
+      font-size: 18px;
+      color: #fff;
+    }
+  }
+}

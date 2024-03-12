@@ -1,7 +1,8 @@
 import { Input, Typography } from 'antd'
-import style from './clickInputEditor.widget.module.less'
 import { useState } from 'react'
 import { EditIcon } from '../../svgIcons'
+import themeStyle from '../../theme.module.less'
+import style from './clickInputEditor.widget.module.less'
 
 interface ClickInputEditorWidgetProps {
   value?: string
@@ -14,6 +15,7 @@ export default function ClickInputEditorWidget(props: ClickInputEditorWidgetProp
     <div className={style['click-input-editor-widget-wrapper']}>
       {isEditing ? (
         <Input
+          className={themeStyle['flower-input']}
           size="small"
           value={props.value}
           onChange={(event) => props.onChange?.(event.target.value)}

@@ -1,4 +1,6 @@
 import { Form, Input, Select } from 'antd'
+import { ArrowDownIcon } from '../svgIcons'
+import themeStyle from '../theme.module.less'
 import style from './message.panel.module.less'
 
 export default function MessagePanel() {
@@ -6,6 +8,8 @@ export default function MessagePanel() {
     <div className={style['message-panel-wrapper']}>
       <Form.Item label="展示类型" name="showType" initialValue="global-message">
         <Select
+          className={themeStyle['flower-select']}
+          suffixIcon={<ArrowDownIcon />}
           options={[
             {
               value: 'global-message',
@@ -20,6 +24,8 @@ export default function MessagePanel() {
       </Form.Item>
       <Form.Item label="消息类型" name="type" initialValue="success">
         <Select
+          className={themeStyle['flower-select']}
+          suffixIcon={<ArrowDownIcon />}
           options={[
             {
               value: 'success',
@@ -33,7 +39,7 @@ export default function MessagePanel() {
         />
       </Form.Item>
       <Form.Item label="文本" name="text">
-        <Input />
+        <Input className={themeStyle['flower-input']} />
       </Form.Item>
     </div>
   )

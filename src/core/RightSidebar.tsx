@@ -50,12 +50,13 @@ export default function RightSidebar() {
           name="basic"
           labelCol={{ span: 6 }}
           wrapperCol={{ span: 18 }}
-          initialValues={{ remember: true }}
           autoComplete="off"
           requiredMark={false}
           onValuesChange={(_, allValues) => {
             if (selectedNodes[0]) {
               const targetNode = nodes.find((node) => node.id === selectedNodes[0].id)!
+
+              console.log('allValues', allValues)
 
               selectedNodes[0].data = allValues
               targetNode.data = allValues

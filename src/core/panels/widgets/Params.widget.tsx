@@ -2,9 +2,9 @@ import { Button, Form, Select } from 'antd'
 import cn from 'classnames'
 import { useState } from 'react'
 import { v4 as uuidv4 } from 'uuid'
+import { ArrowDownIcon, DeleteIcon, PlusIcon } from '../../svgIcons'
 import ClickInputEditorWidget from './ClickInputEditor.widget'
 import style from './params.widget.module.less'
-import { ArrowDownIcon, DeleteIcon, PlusIcon } from '../../svgIcons'
 
 export default function ParamsWidget() {
   const [isCollapsed, setIsCollapsed] = useState(false)

@@ -4,6 +4,7 @@ import { useEffect, useMemo, useState } from 'react'
 import { useNodeId } from 'reactflow'
 import style from './index.module.less'
 import useFStore from './store'
+import themeStyle from './theme.module.less'
 import { BanIcon, PlusIcon } from './svgIcons'
 
 interface NodeAttachMenuProps {
@@ -63,7 +64,14 @@ export default function NodeAttachMenu(props: NodeAttachMenuProps) {
       className={cn(style['menu-wrapper'], props.className, { disabled: props.disabled })}
       onClick={(event) => event.stopPropagation()}
     >
-      <Dropdown {...props.dropdownProps} open={menuOpen} menu={{ items: menu }} trigger={['click']} placement="bottom">
+      <Dropdown
+        {...props.dropdownProps}
+        overlayClassName={themeStyle['flower-dropdown']}
+        open={menuOpen}
+        menu={{ items: menu }}
+        trigger={['click']}
+        placement="bottom"
+      >
         <div
           className="menu-trigger"
           onClick={() => {

@@ -1,8 +1,8 @@
-import { Form, Select, Tag, Collapse } from 'antd'
-import style from './apiService.panel.module.less'
-import { useEffect, type ReactNode } from 'react'
+import { Collapse, Form, Select, Tag } from 'antd'
 import cn from 'classnames'
 import { ArrowDownIcon } from '../svgIcons'
+import style from './apiService.panel.module.less'
+import themeStyle from '../theme.module.less'
 import SourceSelector from './widgets/sourceSelector'
 
 const configure: ConfigureItem = {
@@ -113,6 +113,8 @@ export default function ApiServicePanel() {
     <div className={style['api-service-panel-wrapper']}>
       <Form.Item label="选择接口" name="interface" initialValue="i-1">
         <Select
+          className={themeStyle['flower-select']}
+          suffixIcon={<ArrowDownIcon />}
           options={[
             {
               value: 'i-1',

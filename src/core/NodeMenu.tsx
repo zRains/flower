@@ -5,6 +5,7 @@ import { useNodeId } from 'reactflow'
 import style from './index.module.less'
 import useFStore from './store'
 import { MoreIcon } from './svgIcons'
+import themeStyle from './theme.module.less'
 
 interface NodeMenuProps {
   className?: string
@@ -52,7 +53,14 @@ export default function NodeMenu(props: NodeMenuProps) {
 
   return (
     <div className={cn(style['menu-wrapper'], props.className)} onClick={(event) => event.stopPropagation()}>
-      <Dropdown {...props.dropdownProps} open={menuOpen} menu={{ items: menu }} trigger={['click']} placement="bottom">
+      <Dropdown
+        {...props.dropdownProps}
+        overlayClassName={themeStyle['flower-dropdown']}
+        open={menuOpen}
+        menu={{ items: menu }}
+        trigger={['click']}
+        placement="bottom"
+      >
         <div
           className="menu-trigger"
           onClick={() => {

@@ -4,6 +4,7 @@ import { createContext, useCallback, useContext, useEffect, useMemo, useState, t
 import { v4 as uuidv4 } from 'uuid'
 import { CloseIcon, PlusIcon } from '../../../svgIcons'
 import style from './index.module.less'
+import themeStyle from '../../../theme.module.less'
 import ConstSource, { type ConstType } from './sources/Const.source'
 
 const MenuItemMapContext = createContext<Map<string, string>>(new Map())
@@ -34,14 +35,23 @@ function createMenuItemMap(items: Array<any>) {
   return result
 }
 
-export default function SourceSelector() {
-  const [innerValues, setInnerValues] = useState<SourceItem[]>([
-    {
-      id: uuidv4(),
-      type: 'const-number',
-      data: {},
-    },
-  ])
+interface SourceSelectorProps {
+  value?: Array<SourceItem>
+  onChange?: (value: Array<SourceItem>) => void
+}
+
+export default function SourceSelector(props: SourceSelectorProps) {
+  const { value, onChange } = props
+  const [innerValues, setInnerValues] = useState<SourceItem[]>(
+    value ??
+      [
+        // {
+        //   id: uuidv4(),
+        //   type: 'const-number',
+        //   data: {},
+        // },
+      ],
+  )
 
   /** 菜单项 */
   const menuItems: NonNullable<MenuProps['items']> = useMemo(
@@ -49,10 +59,12 @@ export default function SourceSelector() {
       {
         key: 'const-data',
         label: '常量数据',
+        popupClassName: themeStyle['flower-dropdown'],
         children: [
           {
             key: 'const-number',
             label: '数字常量',
+
             onClick: () => {
               setInnerValues([
                 {
@@ -169,6 +181,7 @@ export default function SourceSelector() {
       const targetValue = _innerValues.find((_innerValue) => _innerValue.id === id)!
 
       targetValue.data = values
+      onChange?.([..._innerValues])
 
       return [..._innerValues]
     })
@@ -204,7 +217,7 @@ export default function SourceSelector() {
             )
           }}
           suffixIcon={
-            <Dropdown trigger={['click']} menu={{ items: menuItems }}>
+            <Dropdown overlayClassName={themeStyle['flower-dropdown']} trigger={['click']} menu={{ items: menuItems }}>
               <div>
                 <PlusIcon />
               </div>
