@@ -1,5 +1,6 @@
-import { useEffect } from 'react'
-import ReactFlow, { Background, ReactFlowProvider, useOnSelectionChange } from 'reactflow'
+import { useDebounceEffect, useSize } from 'ahooks'
+import { useEffect, useRef } from 'react'
+import ReactFlow, { Background, ReactFlowProvider, useOnSelectionChange, useReactFlow } from 'reactflow'
 import 'reactflow/dist/style.css'
 import RightSidebar from './RightSidebar'
 import style from './index.module.less'
@@ -34,13 +35,26 @@ const edgeTypes = {
 }
 
 function LayoutFlow() {
+  const flowerContainerRef = useRef<HTMLDivElement>(null)
   const nodes = useFStore((store) => store.nodes)
   const edges = useFStore((store) => store.edges)
+  const { fitView } = useReactFlow()
   const dagreLayout = useFStore((store) => store.dagreLayout)
   const closeNodeMenu = useFStore((store) => store.closeNodeMenu)
   const onNodesChange = useFStore((store) => store.onNodesChange)
   const onEdgesChange = useFStore((store) => store.onEdgesChange)
   const setSelectedNodes = useFStore((store) => store.setSelectedNodes)
+  const size = useSize(flowerContainerRef)
+
+  useDebounceEffect(
+    () => {
+      fitView({ duration: 250 })
+    },
+    [size],
+    {
+      wait: 250,
+    },
+  )
 
   useOnSelectionChange({
     onChange: ({ nodes }) => setSelectedNodes(nodes),
@@ -54,7 +68,7 @@ function LayoutFlow() {
 
   return (
     <div className={style['flower-container']}>
-      <section className="flower-render-container">
+      <section className="flower-render-container" ref={flowerContainerRef}>
         <ReactFlow
           nodes={nodes}
           edges={edges}
@@ -75,6 +89,7 @@ function LayoutFlow() {
           }}
           defaultEdgeOptions={{ type: 'basicStepEdge' }}
           proOptions={{ hideAttribution: true }}
+          fitViewOptions={{ duration: 250 }}
           fitView
         >
           <Background />

@@ -79,7 +79,7 @@ export const initialNodes: Array<Node> = [
 ]
 
 export const initialEdges: Array<Edge> = [
-  { id: 'e12', source: '1', target: '2' },
+  { id: 'a', source: '1', target: '2' },
   { id: 'e23', source: '2', target: '3' },
   { id: 'e34', source: '3', target: '4' },
   { id: 'e35', source: '3', target: '5' },
@@ -90,3 +90,30 @@ export const initialEdges: Array<Edge> = [
   { id: 'e78', source: '7', target: '8' },
   { id: 'e89', source: '8', target: '9' },
 ]
+
+// 创建一个对象来存储节点之间的连接关系
+const nodeConnections: Record<string, any> = {}
+
+initialEdges.forEach((edge) => {
+  const { source, target } = edge
+  if (!nodeConnections[source]) {
+    nodeConnections[source] = []
+  }
+  if (!nodeConnections[target]) {
+    nodeConnections[target] = []
+  }
+  nodeConnections[source].push(target)
+  nodeConnections[target].push(source)
+})
+
+console.log(initialEdges)
+
+// // 遍历 nodes 数组，根据连接关系为每个节点添加 children 属性
+// initialNodes.forEach(node => {
+//   const connectedNodes = nodeConnections[node.id];
+//   if (connectedNodes) {
+//     node.children = connectedNodes.map(id => nodes.find(n => n.id === id));
+//   }
+// });
+
+type NodeStorageGraph = { rid: number; id: number; uuid: string; children: Array<NodeStorageGraph> }
